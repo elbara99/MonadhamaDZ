@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-surface-200 dark:border-surface-800;
+  }
+
+  body {
+    @apply bg-surface-50 text-surface-900 dark:bg-surface-950 dark:text-surface-100 font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-primary-500/20 text-primary-700 dark:text-primary-300;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-300 dark:bg-surface-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-400 dark:bg-surface-600;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/80 dark:bg-surface-900/80 backdrop-blur-xl border border-white/20 dark:border-surface-800/50;
+  }
+
+  .glass-strong {
+    @apply bg-white/95 dark:bg-surface-900/95 backdrop-blur-xl;
+  }
+
+  .card-gradient {
+    background: linear-gradient(135deg, rgba(51, 109, 255, 0.05) 0%, rgba(45, 212, 191, 0.05) 100%);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer utilities {
+  .animate-delay-100 { animation-delay: 100ms; }
+  .animate-delay-200 { animation-delay: 200ms; }
+  .animate-delay-300 { animation-delay: 300ms; }
+  .animate-delay-400 { animation-delay: 400ms; }
+  .animate-delay-500 { animation-delay: 500ms; }
+}
+
+/* Leaflet overrides */
+.leaflet-container {
+  @apply font-sans !important;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply !bg-white dark:!bg-surface-900 !shadow-card !rounded-xl !border !border-surface-200 dark:!border-surface-800;
+}
+
+.leaflet-popup-tip {
+  @apply !bg-white dark:!bg-surface-900 !border-surface-200 dark:!border-surface-800;
+}
+
+.leaflet-popup-close-button {
+  @apply !text-surface-400 hover:!text-surface-600 !text-lg !font-sans;
+}
+
+/* Map polygon hover */
+.province-polygon {
+  @apply transition-all duration-200 ease-out;
+}
+
+.province-polygon:hover {
+  filter: brightness(1.1) saturate(1.1);
+}
+
+/* Custom scrollbar for panels */
+.panel-scroll {
+  @apply overflow-y-auto;
+  scrollbar-gutter: stable;
+}
+
+/* Skeleton loading */
+.skeleton {
+  @apply bg-surface-200 dark:bg-surface-800 rounded-lg animate-pulse;
+}
+
+/* RTL overrides */
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
+
+[dir="rtl"] .ltr\:ml-auto {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+[dir="rtl"] .ltr\:mr-auto {
+  margin-right: 0;
+  margin-left: auto;
+}
+
+[dir="rtl"] .rotate-180 {
+  transform: rotate(180deg);
+}
+
+
