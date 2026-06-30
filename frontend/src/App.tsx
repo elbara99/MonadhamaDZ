@@ -4,6 +4,7 @@ import { AppLayout } from './components/layout/app-layout'
 import { useSearchStore } from './hooks/use-search'
 import { useRTL } from './hooks/use-rtl'
 import { SearchCommand } from './components/search/search-command'
+import { ProtectedRoute } from './components/auth/protected-route'
 import Login from './pages/login'
 import Dashboard from './pages/dashboard'
 import Provinces from './pages/provinces'
@@ -14,6 +15,8 @@ import Assistant from './pages/assistant'
 import Decisions from './pages/decisions'
 import Reports from './pages/reports'
 import Settings from './pages/settings'
+import Organizations from './pages/organizations'
+import Documents from './pages/documents'
 
 function AppContent() {
   const { isOpen, close } = useSearchStore()
@@ -23,17 +26,21 @@ function AppContent() {
     <>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route element={<AppLayout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/provinces" element={<Provinces />} />
-          <Route path="/provinces/:code" element={<ProvinceDetail />} />
-          <Route path="/compare" element={<Compare />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/assistant" element={<Assistant />} />
-          <Route path="/decisions" element={<Decisions />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/provinces" element={<Provinces />} />
+            <Route path="/provinces/:code" element={<ProvinceDetail />} />
+            <Route path="/organizations" element={<Organizations />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/compare" element={<Compare />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/assistant" element={<Assistant />} />
+            <Route path="/decisions" element={<Decisions />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Route>
         </Route>
       </Routes>
 

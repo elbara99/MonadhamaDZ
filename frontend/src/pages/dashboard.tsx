@@ -29,7 +29,8 @@ import {
   Clock,
 } from 'lucide-react'
 import { cn, formatNumber, getScoreColor } from '@/lib/utils'
-import { provinces, alerts, insights, decisions, getProvinceByCode } from '@/lib/mock-data'
+import { alerts, insights, decisions, getProvinceByCode } from '@/lib/mock-data'
+import { useProvinces } from '@/hooks/use-provinces'
 import { AlgeriaMap } from '@/components/map/algeria-map'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -124,6 +125,8 @@ export default function DashboardPage() {
   const [rankFilter, setRankFilter] = useState('overall')
   const [showFullRankings, setShowFullRankings] = useState(false)
 
+  const { data: provincesData, isLoading: provincesLoading, isError: provincesError } = useProvinces({ page_size: 100 })
+
   const timeAgo = useCallback((dateStr: string): string => {
     const diff = Date.now() - new Date(dateStr).getTime()
     const mins = Math.floor(diff / 60000)
@@ -136,17 +139,29 @@ export default function DashboardPage() {
   }, [t])
 
   const ranked = useMemo(() => {
-    const sorted = [...provinces].sort((a, b) => {
-      if (rankFilter === 'overall') return b.compositeScore - a.compositeScore
-      return (b.scores[rankFilter] ?? 0) - (a.scores[rankFilter] ?? 0)
+    if (!provincesData?.items.length) return []
+    const sorted = [...provincesData.items].sort((a, b) => {
+      const mockA = getProvinceByCode(a.code.toUpperCase())
+      const mockB = getProvinceByCode(b.code.toUpperCase())
+      if (rankFilter === 'overall') return (mockB?.compositeScore ?? 50) - (mockA?.compositeScore ?? 50)
+      return (mockB?.scores[rankFilter] ?? 50) - (mockA?.scores[rankFilter] ?? 50)
     })
-    return sorted.map((p, i) => ({
-      rank: i + 1,
-      ...p,
-      score: rankFilter === 'overall' ? p.compositeScore : (p.scores[rankFilter] ?? 0),
-      change: Math.round((Math.random() - 0.4) * 6 - 2),
-    }))
-  }, [rankFilter])
+    return sorted.map((p, i) => {
+      const mock = getProvinceByCode(p.code.toUpperCase())
+      return {
+        rank: i + 1,
+        code: p.code.toUpperCase(),
+        name: p.name_fr || p.code,
+        nameAr: p.name_ar,
+        compositeScore: mock?.compositeScore ?? 50,
+        scores: mock?.scores ?? {},
+        trends: mock?.trends ?? {},
+        population: mock?.population ?? 0,
+        score: rankFilter === 'overall' ? (mock?.compositeScore ?? 50) : (mock?.scores[rankFilter] ?? 50),
+        change: Math.round((Math.random() - 0.4) * 6 - 2),
+      }
+    })
+  }, [provincesData, rankFilter])
 
   const top5 = ranked.slice(0, 5)
   const bottom5 = ranked.slice(-5).reverse()

@@ -1,9 +1,11 @@
 import { useCallback } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   LayoutDashboard,
   Map,
+  Building2,
+  FolderOpen,
   GitCompare,
   Search,
   Bot,
@@ -18,6 +20,7 @@ import {
 import { cn } from '@/lib/utils'
 import { useSidebar } from '@/hooks/use-sidebar'
 import { Avatar } from '@/components/ui/avatar'
+import { useAuthStore, useLogout } from '@/hooks/use-auth'
 import { useTranslation } from 'react-i18next'
 
 const SIDEBAR_EXPANDED = 240
@@ -28,13 +31,18 @@ function Sidebar() {
   const isRTL = i18n.language === 'ar'
   const { isCollapsed, toggle, isMobileOpen, setMobileOpen } = useSidebar()
   const location = useLocation()
+  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user)
+  const logoutMutation = useLogout()
 
   const NAV_ITEMS = [
     { label: t('nav.dashboard'), icon: LayoutDashboard, to: '/' },
     { label: t('nav.provinces'), icon: Map, to: '/provinces' },
+    { label: t('nav.organizations'), icon: Building2, to: '/organizations' },
+    { label: t('nav.documents'), icon: FolderOpen, to: '/documents' },
     { label: t('nav.compare'), icon: GitCompare, to: '/compare' },
     { label: t('nav.search'), icon: Search, to: '/search' },
-    { label: t('nav.aiAssistant'), icon: Bot, to: '/ai' },
+    { label: t('nav.aiAssistant'), icon: Bot, to: '/assistant' },
     { label: t('nav.decisions'), icon: FileCheck, to: '/decisions' },
     { label: t('nav.reports'), icon: FileText, to: '/reports' },
     { label: t('nav.settings'), icon: Settings, to: '/settings' },
@@ -137,7 +145,7 @@ function Sidebar() {
           )}
         >
           <Avatar
-            name={t('mockData.user.displayName')}
+            name={user?.full_name || 'User'}
             size="sm"
             status="online"
             className="shrink-0"
@@ -153,10 +161,10 @@ function Sidebar() {
                 className="flex min-w-0 flex-1 flex-col overflow-hidden"
               >
                 <span className="truncate text-sm font-medium text-white">
-                  {t('mockData.user.displayName')}
+                  {user?.full_name || 'User'}
                 </span>
                 <span className="truncate text-xs text-surface-500">
-                  {t('mockData.user.email')}
+                  {user?.email || ''}
                 </span>
               </motion.div>
             )}
@@ -164,6 +172,7 @@ function Sidebar() {
           {!isCollapsed && (
             <button
               type="button"
+              onClick={() => logoutMutation.mutate()}
               className="flex shrink-0 items-center justify-center rounded-md p-1 text-surface-500 hover:text-surface-300"
               aria-label={t('nav.signOut')}
             >

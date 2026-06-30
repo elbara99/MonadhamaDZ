@@ -34,12 +34,15 @@ import {
 } from 'lucide-react'
 import { cn, formatNumber, getScoreColor, getScoreBg, getScoreLabel } from '@/lib/utils'
 import {
-  provinces,
+  provinces as mockProvinces,
   dimensionKeys,
   getDimensionLabel,
   getProvinceByCode,
 } from '@/lib/mock-data'
 import type { Province, DimensionKey } from '@/lib/mock-data'
+import { useProvince, useProvinces } from '@/hooks/use-provinces'
+import { Skeleton } from '@/components/ui/skeleton'
+import { AlertCircle } from 'lucide-react'
 import { PriorityScore } from '@/components/scores/priority-score'
 import { DimensionCard } from '@/components/scores/dimension-card'
 import { RadarChart } from '@/components/charts/radar-chart'
@@ -226,7 +229,12 @@ export default function ProvinceDetailPage() {
   const { code } = useParams<{ code: string }>()
   const navigate = useNavigate()
   const provinceCode = code?.toUpperCase() ?? ''
-  const province = getProvinceByCode(provinceCode)
+
+  const { data: apiProvince, isLoading, isError, error } = useProvince(provinceCode)
+  const { data: allProvinces } = useProvinces({ page_size: 100 })
+
+  const mockProvince = getProvinceByCode(provinceCode)
+  const province = mockProvince ?? null
 
   const [selectedDim, setSelectedDim] = useState<string | null>(null)
   const [aiRegenerating, setAiRegenerating] = useState(false)
@@ -235,6 +243,41 @@ export default function ProvinceDetailPage() {
   const timeline = useMemo(() => province ? generateTimeline(province, t) : [], [province, t])
   const entities = useMemo(() => province ? generateMockEntities(province) : null, [province])
   const scoreTrend = useMemo(() => generateScoreTrend(), [])
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-[1440px] space-y-8 pb-16 px-6 pt-8">
+        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-48 w-full rounded-3xl" />
+        <Skeleton className="h-32 w-full rounded-2xl" />
+        <Skeleton className="h-64 w-full rounded-2xl" />
+      </div>
+    )
+  }
+
+  if (isError && !province) {
+    return (
+      <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-center px-6 py-32 text-center">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800">
+          <AlertCircle className="h-8 w-8 text-danger-500" />
+        </div>
+        <h2 className="text-xl font-semibold text-surface-900 dark:text-white">
+          {t('common.error')}
+        </h2>
+        <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">
+          {(error as any)?.response?.data?.detail || t('provinceDetail.notFoundDesc', { code: provinceCode })}
+        </p>
+        <Button
+          variant="ghost"
+          className="mt-6 gap-2"
+          onClick={() => navigate('/provinces')}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t('provinceDetail.backToProvinces')}
+        </Button>
+      </div>
+    )
+  }
 
   if (!province) {
     return (
@@ -378,7 +421,7 @@ export default function ProvinceDetailPage() {
                 </div>
                 <p className="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
                   {province.name} shows a composite score of <strong>{province.compositeScore}</strong>, ranking it{' '}
-                  {provinces.filter((p) => p.compositeScore > province.compositeScore).length + 1}
+                  {mockProvinces.filter((p) => p.compositeScore > province.compositeScore).length + 1}
                   {t('provinceDetail.outOf')} 58 provinces. The province demonstrates particular strength in{' '}
                   {[...dimensionKeys]
                     .sort((a, b) => (province.scores[b] ?? 0) - (province.scores[a] ?? 0))

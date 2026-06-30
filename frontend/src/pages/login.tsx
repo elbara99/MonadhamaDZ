@@ -1,12 +1,11 @@
-'use client'
-
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { Hexagon, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Hexagon, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useLogin } from '../hooks/use-auth'
 
 const stagger = {
   animate: {
@@ -30,9 +29,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const [errors, setErrors] = useState<{ email?: string; password?: string; api?: string }>({})
   const [shake, setShake] = useState(false)
+
+  const loginMutation = useLogin()
 
   const validate = () => {
     const e: typeof errors = {}
@@ -43,7 +43,7 @@ export default function LoginPage() {
     return e
   }
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     const v = validate()
     setErrors(v)
@@ -52,11 +52,15 @@ export default function LoginPage() {
       setTimeout(() => setShake(false), 500)
       return
     }
-    setLoading(true)
-    setTimeout(() => {
-      setLoading(false)
+    try {
+      await loginMutation.mutateAsync({ email, password })
       navigate('/')
-    }, 1200)
+    } catch (err: any) {
+      const detail = err?.response?.data?.detail
+      setErrors({ api: detail || t('login.invalidCredentials') })
+      setShake(true)
+      setTimeout(() => setShake(false), 500)
+    }
   }
 
   return (
@@ -101,13 +105,19 @@ export default function LoginPage() {
               onSubmit={handleSubmit}
               className="flex flex-col gap-5"
             >
+              {errors.api && (
+                <div className="rounded-lg bg-danger-50 p-3 text-sm text-danger-600 dark:bg-danger-950/50 dark:text-danger-400">
+                  {errors.api}
+                </div>
+              )}
+
               <div className={shake ? 'animate-[shake_0.4s_ease-in-out]' : ''}>
                 <Input
                   label={t('login.email')}
                   type="email"
                   placeholder={t('login.emailPlaceholder')}
                   value={email}
-                  onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })) }}
+                  onChange={(e) => { setEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined, api: undefined })) }}
                   error={errors.email}
                   autoComplete="email"
                 />
@@ -120,7 +130,7 @@ export default function LoginPage() {
                     type={showPassword ? 'text' : 'password'}
                     placeholder={t('login.passwordPlaceholder')}
                     value={password}
-                    onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined })) }}
+                    onChange={(e) => { setPassword(e.target.value); setErrors((p) => ({ ...p, password: undefined, api: undefined })) }}
                     error={errors.password}
                     autoComplete="current-password"
                   />
@@ -160,8 +170,8 @@ export default function LoginPage() {
                 </button>
               </div>
 
-              <Button type="submit" size="lg" loading={loading} className="w-full">
-                {loading ? t('login.signingIn') : t('login.signIn')}
+              <Button type="submit" size="lg" loading={loginMutation.isPending} className="w-full">
+                {loginMutation.isPending ? t('login.signingIn') : t('login.signIn')}
               </Button>
             </motion.form>
 

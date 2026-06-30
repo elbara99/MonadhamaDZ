@@ -11,11 +11,20 @@ import {
   ArrowUpDown,
   ChevronRight,
   X,
+  AlertCircle,
 } from 'lucide-react'
 import { cn, formatNumber, getScoreColor, getScoreBg, getScoreLabel } from '@/lib/utils'
-import { provinces, dimensionKeys, getDimensionLabel } from '@/lib/mock-data'
+import {
+  provinces as mockProvinces,
+  dimensionKeys,
+  getDimensionLabel,
+  getProvinceByCode,
+} from '@/lib/mock-data'
 import type { Province } from '@/lib/mock-data'
+import { useProvinces } from '@/hooks/use-provinces'
+import type { ProvinceRead } from '@/lib/api-types'
 import { AlgeriaMap } from '@/components/map/algeria-map'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 
 const sortOptions = [
@@ -36,9 +45,15 @@ function getScoreGradient(score: number): string {
   return 'from-red-500 to-red-400'
 }
 
-function trendValue(province: Province, dimension: string): number {
-  if (dimension === 'composite') return province.compositeScore
-  return province.scores[dimension] ?? 0
+function getMockScore(provinceCode: string, dimension: string): number {
+  const mock = getProvinceByCode(provinceCode)
+  if (!mock) return 50
+  if (dimension === 'composite') return mock.compositeScore
+  return mock.scores[dimension] ?? 50
+}
+
+function getMockPopulation(provinceCode: string): number {
+  return getProvinceByCode(provinceCode)?.population ?? 0
 }
 
 export default function ProvincesPage() {
@@ -47,37 +62,38 @@ export default function ProvincesPage() {
   const [selectedDimension, setSelectedDimension] = useState('composite')
   const [selectedCode, setSelectedCode] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [sortBy, setSortBy] = useState<SortKey>('composite')
+  const [sortBy, setSortBy] = useState<SortKey>('name')
+
+  const { data, isLoading, isError, error } = useProvinces({ page_size: 100 })
 
   const showCount = 10
 
   const filtered = useMemo(() => {
-    let list = [...provinces]
+    if (!data) return []
+    let list = [...data.items]
 
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       list = list.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.nameAr.includes(q) ||
-          p.nameFr.toLowerCase().includes(q) ||
+          (p.name_fr?.toLowerCase() || '').includes(q) ||
+          (p.name_ar || '').includes(q) ||
           p.code.toLowerCase().includes(q),
       )
     }
 
     list.sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name)
-      if (sortBy === 'population') return b.population - a.population
-      const sa = selectedDimension === 'composite' ? a.compositeScore : (a.scores[selectedDimension] ?? 0)
-      const sb = selectedDimension === 'composite' ? b.compositeScore : (b.scores[selectedDimension] ?? 0)
+      if (sortBy === 'name') return (a.name_fr || a.code).localeCompare(b.name_fr || b.code)
+      const sa = getMockScore(a.code.toUpperCase(), selectedDimension)
+      const sb = getMockScore(b.code.toUpperCase(), selectedDimension)
       return sb - sa
     })
 
     return list
-  }, [searchQuery, sortBy, selectedDimension])
+  }, [data, searchQuery, sortBy, selectedDimension])
 
   const selectedProvince = selectedCode
-    ? provinces.find((p) => p.code === selectedCode)
+    ? getProvinceByCode(selectedCode)
     : null
 
   return (
@@ -95,7 +111,7 @@ export default function ProvincesPage() {
             {t('provinces.title')}
           </h1>
           <p className="mt-0.5 text-xs text-surface-500 dark:text-surface-400">
-            {t('provinces.provincesCountFormat', { count: filtered.length })}
+            {t('provinces.provincesCountFormat', { count: data?.total ?? 0 })}
           </p>
         </div>
 
@@ -187,7 +203,31 @@ export default function ProvincesPage() {
 
         {/* Province List */}
         <div className="flex-1 overflow-y-auto panel-scroll">
-          {filtered.length === 0 ? (
+          {isLoading && (
+            <div className="px-4 py-4 space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <Skeleton className="h-6 w-1 rounded-full" />
+                  <div className="flex-1 space-y-1">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                  <Skeleton className="h-5 w-12 rounded-md" />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {isError && (
+            <div className="flex flex-col items-center justify-center py-16 text-center px-4">
+              <AlertCircle className="h-8 w-8 text-danger-500" />
+              <p className="mt-2 text-sm text-surface-500 dark:text-surface-400">
+                {(error as any)?.response?.data?.detail || t('common.error')}
+              </p>
+            </div>
+          )}
+
+          {data && filtered.length === 0 && (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <MapPin className="h-8 w-8 text-surface-300 dark:text-surface-600" />
               <p className="mt-2 text-sm text-surface-500 dark:text-surface-400">
@@ -201,20 +241,24 @@ export default function ProvincesPage() {
                 {t('provinces.clearSearch')}
               </button>
             </div>
-          ) : (
+          )}
+
+          {data && filtered.length > 0 && (
             <>
-              {filtered.slice(0, showCount).map((province, i) => {
-                const val = trendValue(province, selectedDimension)
-                const isSelected = selectedCode === province.code
+              {filtered.slice(0, showCount).map((province: ProvinceRead, i: number) => {
+                const code = province.code.toUpperCase()
+                const val = getMockScore(code, selectedDimension)
+                const population = getMockPopulation(code)
+                const isSelected = selectedCode === code
                 return (
                   <motion.button
-                    key={province.code}
+                    key={code}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.25, delay: i * 0.02 }}
                     type="button"
-                    onClick={() => setSelectedCode(province.code)}
-                    onDoubleClick={() => navigate(`/provinces/${province.code.toLowerCase()}`)}
+                    onClick={() => setSelectedCode(code)}
+                    onDoubleClick={() => navigate(`/provinces/${code.toLowerCase()}`)}
                     className={cn(
                       'relative flex w-full items-center gap-3 border-l-2 px-4 py-3 text-left transition-colors hover:bg-surface-50 dark:hover:bg-surface-800/50',
                       isSelected
@@ -233,14 +277,14 @@ export default function ProvincesPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="truncate text-sm font-medium text-surface-900 dark:text-white">
-                          {province.name}
+                          {province.name_fr || code}
                         </span>
                         <span className="shrink-0 text-2xs text-surface-400 dark:text-surface-500">
-                          {province.code}
+                          {code}
                         </span>
                       </div>
                       <span className="text-xs text-surface-400 dark:text-surface-500" dir="rtl">
-                        {province.nameAr}
+                        {province.name_ar}
                       </span>
                     </div>
 
@@ -259,7 +303,7 @@ export default function ProvincesPage() {
                         {val}
                       </span>
                       <span className="text-2xs text-surface-400 dark:text-surface-500">
-                        {formatNumber(province.population)}
+                        {formatNumber(population)}
                       </span>
                     </div>
                   </motion.button>

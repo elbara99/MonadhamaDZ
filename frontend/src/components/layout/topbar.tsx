@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect, type ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Bell, Sun, Moon, Menu } from 'lucide-react'
+import { Search, Bell, Sun, Moon, Menu, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/ui/avatar'
 import { useTheme } from '@/hooks/use-theme'
 import { useSidebar } from '@/hooks/use-sidebar'
+import { useAuthStore, useLogout } from '@/hooks/use-auth'
 import { useTranslation } from 'react-i18next'
 
 interface TopbarProps {
@@ -20,6 +21,9 @@ function Topbar({ title, breadcrumbs, actions }: TopbarProps) {
   const { t } = useTranslation()
   const { theme, toggleTheme } = useTheme()
   const { setMobileOpen } = useSidebar()
+  const navigate = useNavigate()
+  const user = useAuthStore((s) => s.user)
+  const logoutMutation = useLogout()
   const [notifOpen, setNotifOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const notifRef = useRef<HTMLButtonElement>(null)
@@ -187,7 +191,7 @@ function Topbar({ title, breadcrumbs, actions }: TopbarProps) {
             className="flex items-center gap-2 rounded-lg p-1 transition-colors hover:bg-surface-100 dark:hover:bg-surface-800"
             aria-label={t('common.profile')}
           >
-            <Avatar name={t('mockData.user.displayName')} size="sm" />
+            <Avatar name={user?.full_name || 'User'} size="sm" />
           </button>
 
           <AnimatePresence>
@@ -201,22 +205,28 @@ function Topbar({ title, breadcrumbs, actions }: TopbarProps) {
               >
                 <div className="border-b border-surface-200 px-4 py-3 dark:border-surface-800">
                   <p className="text-sm font-medium text-surface-900 dark:text-surface-100">
-                    {t('mockData.user.displayName')}
+                    {user?.full_name || 'User'}
                   </p>
                   <p className="text-xs text-surface-500">
-                    {t('mockData.user.email')}
+                    {user?.email || ''}
                   </p>
                 </div>
                 <div className="p-1">
-                  {[t('nav.settings'), t('nav.help'), t('nav.signOut')].map((item) => (
-                    <button
-                      key={item}
-                      type="button"
-                      className="w-full rounded-md px-3 py-2 text-left text-sm text-surface-700 transition-colors hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-surface-800"
-                    >
-                      {item}
-                    </button>
-                  ))}
+                  <button
+                    type="button"
+                    onClick={() => navigate('/settings')}
+                    className="w-full rounded-md px-3 py-2 text-left text-sm text-surface-700 transition-colors hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-surface-800"
+                  >
+                    {t('nav.settings')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => logoutMutation.mutate()}
+                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-surface-700 transition-colors hover:bg-surface-100 dark:text-surface-300 dark:hover:bg-surface-800"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    {t('nav.signOut')}
+                  </button>
                 </div>
               </motion.div>
             )}
