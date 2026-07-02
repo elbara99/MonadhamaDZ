@@ -1,21 +1,21 @@
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, type SelectHTMLAttributes, type ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string
   error?: string
   icon?: ReactNode
 }
 
-const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, icon, className, id, ...props }, ref) => {
-    const inputId = id || label?.toLowerCase().replace(/\s+/g, '-')
+const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  ({ label, error, icon, className, id, children, ...props }, ref) => {
+    const selectId = id || label?.toLowerCase().replace(/\s+/g, '-')
 
     return (
       <div className="w-full">
         {label && (
           <label
-            htmlFor={inputId}
+            htmlFor={selectId}
             className="form-label"
           >
             {label}
@@ -27,23 +27,25 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
               {icon}
             </div>
           )}
-          <input
+          <select
             ref={ref}
-            id={inputId}
+            id={selectId}
             className={cn(
-              'form-input w-full',
+              'form-select w-full',
               icon && 'pr-10',
               error && 'form-input-error',
               className,
             )}
             aria-invalid={!!error}
-            aria-describedby={error ? `${inputId}-error` : undefined}
+            aria-describedby={error ? `${selectId}-error` : undefined}
             {...props}
-          />
+          >
+            {children}
+          </select>
         </div>
         {error && (
           <p
-            id={`${inputId}-error`}
+            id={`${selectId}-error`}
             className="form-error"
             role="alert"
           >
@@ -54,6 +56,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     )
   },
 )
-Input.displayName = 'Input'
+Select.displayName = 'Select'
 
-export { Input }
+export { Select }

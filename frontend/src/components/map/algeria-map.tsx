@@ -9,15 +9,15 @@ import { getProvinceByCode } from '@/lib/mock-data'
 import { ProvinceTooltip } from './province-tooltip'
 import type { Province } from '@/lib/mock-data'
 
-const DARK_TILE_URL = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-const LIGHT_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+const DARK_TILE_URL = 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png'
+const LIGHT_TILE_URL = 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png'
 const ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>'
 
 function getScoreFillColor(score: number): string {
-  if (score >= 90) return '#06b6d4'
+  if (score >= 90) return '#15803d'
   if (score >= 75) return '#22c55e'
   if (score >= 60) return '#eab308'
-  if (score >= 40) return '#f59e0b'
+  if (score >= 40) return '#f97316'
   return '#ef4444'
 }
 
@@ -65,9 +65,9 @@ function MapContent({
 
       return {
         fillColor: score != null ? getScoreFillColor(score) : '#6b7280',
-        weight: isSelected ? 2 : 0.5,
-        color: isSelected ? '#fff' : '#374151',
-        fillOpacity: score != null ? 0.8 : 0.25,
+        weight: isSelected ? 2 : 0.75,
+        color: isDarkMode() ? (isSelected ? '#fff' : '#1f2937') : (isSelected ? '#000' : '#ffffff'),
+        fillOpacity: score != null ? (isDarkMode() ? 0.85 : 0.9) : 0.25,
         opacity: 1,
       }
     },

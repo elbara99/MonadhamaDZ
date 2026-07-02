@@ -2,6 +2,7 @@
   "nav": {
     "home": "Accueil",
     "dashboard": "Tableau de bord",
+    "nationalSituation": "Situation Nationale",
     "provinces": "Wilayas",
     "organizations": "Organisations",
     "documents": "Documents",
@@ -43,7 +44,19 @@
     "select": "Select",
     "billion": "B",
     "million": "M",
-    "thousand": "K"
+    "thousand": "K",
+    "overall": "Global",
+    "filter": "Filtrer",
+    "health": "Santé",
+    "education": "Éducation",
+    "economy": "Économie",
+    "infrastructure": "Infrastructure",
+    "security": "Sécurité",
+    "employment": "Emploi",
+    "population": "Population",
+    "priority": "Priorité",
+    "priorityScore": "Score de priorité",
+    "confidenceScore": "Confiance"
   },
   "login": {
     "welcomeBack": "Bon retour",
@@ -64,12 +77,22 @@
     "copyright": "© 2026 Monadhama. Tous droits réservés."
   },
   "dashboard": {
+    "title": "Situation Nationale",
+    "subtitle": "Surveillance intelligente des wilayas — suivi en temps réel des 58 wilayas",
     "executiveOverview": "Vue d'ensemble exécutive",
     "algeriaMonitored": "Algérie surveillée",
+    "nationalPerformanceMap": "Carte de performance nationale",
+    "nationalScore": "Score National",
+    "safeProvinces": "Wilayas sûres",
+    "provincesCount": "wilayas",
+    "perCapita": "par habitant",
     "population": "Population",
+    "gdp": "PIB",
     "gdpNominal": "PIB (Nominal)",
     "avgCompositeScore": "Score composite moyen",
     "provincesInAlert": "Wilayas en alerte",
+    "provinces": "Wilayas",
+    "dataSources": "Sources de données",
     "dataSourcesActive": "Sources de données actives",
     "activeDecisions": "Décisions actives",
     "provinceMap": "Carte des wilayas",
@@ -83,12 +106,14 @@
     "keyIssue": "Problème clé",
     "filterBy": "Filtrer par",
     "showTopBottom": "Afficher Haut / Bas",
+    "showTopFive": "Afficher les 5 meilleurs",
     "showAll": "Tout afficher",
     "recentDecisions": "Décisions récentes",
     "priority": "Priorité",
     "confidence": "Confiance",
     "explore": "Explorer",
-    "quickSearch": "Recherche rapide"
+    "quickSearch": "Recherche rapide",
+    "noAlerts": "Aucune alerte active"
   },
   "provinces": {
     "provinceExplorer": "Explorateur de wilayas",
@@ -373,6 +398,11 @@
     "compositeScore": "Score composite"
   },
   "scores": {
+    "excellent": "Excellent",
+    "good": "Bon",
+    "fair": "Moyen",
+    "warning": "Alerte",
+    "critical": "Critique",
     "priorityScore": "Score prioritaire",
     "trustScore": "Score de confiance"
   },

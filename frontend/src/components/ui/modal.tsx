@@ -94,7 +94,7 @@ function Modal({
             animate="visible"
             exit="exit"
             className={cn(
-              'relative w-full rounded-2xl bg-white p-6 shadow-modal dark:bg-surface-900',
+              'modal-content',
               sizeClasses[size],
               className,
             )}
@@ -103,14 +103,14 @@ function Modal({
               <button
                 type="button"
                 onClick={onClose}
-                className="absolute right-4 top-4 rounded-lg p-1 text-surface-400 transition-colors hover:bg-surface-100 hover:text-surface-600 dark:hover:bg-surface-800 dark:hover:text-surface-300"
+                className="modal-close"
                 aria-label={t('common.close')}
               >
                 <X className="h-5 w-5" />
               </button>
             )}
             {title && (
-              <h2 className="text-lg font-semibold text-surface-900 dark:text-surface-100">
+              <h2 className="text-h2 text-navy-900 dark:text-surface-100">
                 {title}
               </h2>
             )}

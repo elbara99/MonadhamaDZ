@@ -1,5 +1,3 @@
-'use client'
-
 import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +10,7 @@ import {
   ChevronRight,
   X,
   AlertCircle,
+  Layers,
 } from 'lucide-react'
 import { cn, formatNumber, getScoreColor, getScoreBg, getScoreLabel } from '@/lib/utils'
 import {
@@ -20,7 +19,7 @@ import {
   getDimensionLabel,
   getProvinceByCode,
 } from '@/lib/mock-data'
-import type { Province } from '@/lib/mock-data'
+import type { Province, DimensionKey } from '@/lib/mock-data'
 import { useProvinces } from '@/hooks/use-provinces'
 import type { ProvinceRead } from '@/lib/api-types'
 import { AlgeriaMap } from '@/components/map/algeria-map'
@@ -97,40 +96,33 @@ export default function ProvincesPage() {
     : null
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-4rem)] max-w-[1440px] flex-col gap-0 overflow-hidden lg:flex-row">
+    <div className="flex h-[calc(100vh-4rem)] flex-col overflow-hidden lg:flex-row">
       {/* Left Panel */}
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="flex w-full shrink-0 flex-col border-surface-200 bg-white dark:border-surface-800 dark:bg-surface-900 lg:w-[35%] lg:border-r"
-      >
+      <div className="flex w-full shrink-0 flex-col border-surface-200 bg-white dark:border-navy-700 dark:bg-navy-900 lg:w-[35%] lg:border-l">
         {/* Header */}
-        <div className="border-b border-surface-100 px-5 py-4 dark:border-surface-800">
-          <h1 className="text-lg font-semibold text-surface-900 dark:text-white">
-            {t('provinces.title')}
-          </h1>
-          <p className="mt-0.5 text-xs text-surface-500 dark:text-surface-400">
+        <div className="border-b border-surface-100 px-5 py-4 dark:border-navy-700">
+          <h1 className="page-title text-lg">{t('provinces.title')}</h1>
+          <p className="page-subtitle mt-0.5">
             {t('provinces.provincesCountFormat', { count: data?.total ?? 0 })}
           </p>
         </div>
 
         {/* Search */}
-        <div className="border-b border-surface-100 px-4 py-3 dark:border-surface-800">
+        <div className="border-b border-surface-100 px-4 py-3 dark:border-navy-700">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
+            <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-surface-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('provinces.searchProvinces')}
-              className="w-full rounded-lg border border-surface-200 bg-surface-50 py-2 pl-9 pr-3 text-sm text-surface-900 placeholder-surface-400 transition-colors focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-100 dark:placeholder-surface-500 dark:focus:border-primary-400"
+              className="form-input w-full py-2.5 pl-3 pr-9"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600 dark:hover:text-surface-300"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-surface-400 hover:text-surface-600 dark:hover:text-surface-300"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -139,10 +131,10 @@ export default function ProvincesPage() {
         </div>
 
         {/* Dimension Filters */}
-        <div className="border-b border-surface-100 px-4 py-3 dark:border-surface-800">
+        <div className="border-b border-surface-100 px-4 py-3 dark:border-navy-700">
           <div className="mb-2 flex items-center gap-1.5">
             <SlidersHorizontal className="h-3.5 w-3.5 text-surface-400" />
-            <span className="text-2xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
+            <span className="text-mini font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
               {t('provinces.dimension')}
             </span>
           </div>
@@ -151,10 +143,10 @@ export default function ProvincesPage() {
               type="button"
               onClick={() => setSelectedDimension('composite')}
               className={cn(
-                'rounded-lg px-2.5 py-1 text-2xs font-medium transition-colors',
+                'rounded-btn px-2.5 py-1.5 text-mini font-semibold uppercase tracking-wider transition-colors',
                 selectedDimension === 'composite'
-                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'
-                  : 'bg-surface-100 text-surface-500 hover:bg-surface-200 hover:text-surface-700 dark:bg-surface-800 dark:text-surface-400 dark:hover:bg-surface-700 dark:hover:text-surface-200',
+                  ? 'bg-algeria-500/10 text-algeria-600 dark:bg-algeria-900/30 dark:text-algeria-400'
+                  : 'bg-surface-100 text-surface-500 hover:bg-surface-200 hover:text-surface-700 dark:bg-navy-800 dark:text-surface-400 dark:hover:bg-navy-700 dark:hover:text-surface-200',
               )}
             >
               {t('provinces.composite')}
@@ -165,10 +157,10 @@ export default function ProvincesPage() {
                 type="button"
                 onClick={() => setSelectedDimension(key)}
                 className={cn(
-                  'rounded-lg px-2.5 py-1 text-2xs font-medium transition-colors',
+                  'rounded-btn px-2.5 py-1.5 text-mini font-semibold uppercase tracking-wider transition-colors',
                   selectedDimension === key
-                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'
-                    : 'bg-surface-100 text-surface-500 hover:bg-surface-200 hover:text-surface-700 dark:bg-surface-800 dark:text-surface-400 dark:hover:bg-surface-700 dark:hover:text-surface-200',
+                    ? 'bg-algeria-500/10 text-algeria-600 dark:bg-algeria-900/30 dark:text-algeria-400'
+                    : 'bg-surface-100 text-surface-500 hover:bg-surface-200 hover:text-surface-700 dark:bg-navy-800 dark:text-surface-400 dark:hover:bg-navy-700 dark:hover:text-surface-200',
                 )}
               >
                 {getDimensionLabel(key)}
@@ -178,8 +170,8 @@ export default function ProvincesPage() {
         </div>
 
         {/* Sort */}
-        <div className="flex items-center justify-between border-b border-surface-100 px-4 py-2 dark:border-surface-800">
-          <span className="text-2xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
+        <div className="flex items-center justify-between border-b border-surface-100 px-4 py-2 dark:border-navy-700">
+          <span className="text-mini font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
             {t('common.sortBy')}
           </span>
           <div className="flex gap-1">
@@ -188,12 +180,12 @@ export default function ProvincesPage() {
                 key={opt.id}
                 type="button"
                 onClick={() => setSortBy(opt.id)}
-                className={cn(
-                  'rounded-md px-2 py-1 text-2xs font-medium transition-colors',
-                  sortBy === opt.id
-                    ? 'bg-primary-100 text-primary-700 dark:bg-primary-900/40 dark:text-primary-300'
-                    : 'text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200',
-                )}
+                  className={cn(
+                    'rounded-btn px-2 py-1 text-tiny font-medium transition-colors',
+                    sortBy === opt.id
+                      ? 'bg-algeria-500/10 text-algeria-600 dark:bg-algeria-900/30 dark:text-algeria-400'
+                      : 'text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200',
+                  )}
               >
                 {t(opt.tKey)}
               </button>
@@ -207,36 +199,36 @@ export default function ProvincesPage() {
             <div className="px-4 py-4 space-y-3">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <Skeleton className="h-6 w-1 rounded-full" />
+                  <Skeleton variant="text" className="h-6 w-1 !rounded-full" />
                   <div className="flex-1 space-y-1">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-3 w-20" />
+                    <Skeleton variant="text" className="h-4 w-32" />
+                    <Skeleton variant="text" className="h-3 w-20" />
                   </div>
-                  <Skeleton className="h-5 w-12 rounded-md" />
+                  <Skeleton variant="text" className="h-5 w-12 !rounded-btn" />
                 </div>
               ))}
             </div>
           )}
 
           {isError && (
-            <div className="flex flex-col items-center justify-center py-16 text-center px-4">
-              <AlertCircle className="h-8 w-8 text-danger-500" />
-              <p className="mt-2 text-sm text-surface-500 dark:text-surface-400">
+            <div className="empty-state px-4">
+              <AlertCircle className="empty-state-icon h-8 w-8 text-danger-500" />
+              <p className="empty-state-desc">
                 {(error as any)?.response?.data?.detail || t('common.error')}
               </p>
             </div>
           )}
 
           {data && filtered.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <MapPin className="h-8 w-8 text-surface-300 dark:text-surface-600" />
-              <p className="mt-2 text-sm text-surface-500 dark:text-surface-400">
+            <div className="empty-state">
+              <MapPin className="empty-state-icon h-8 w-8" />
+              <p className="empty-state-desc">
                 {t('provinces.noProvincesFound')}
               </p>
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="mt-1 text-xs text-primary-500 hover:text-primary-400"
+                className="mt-1 text-tiny text-algeria-600 hover:text-algeria-500"
               >
                 {t('provinces.clearSearch')}
               </button>
@@ -260,13 +252,12 @@ export default function ProvincesPage() {
                     onClick={() => setSelectedCode(code)}
                     onDoubleClick={() => navigate(`/provinces/${code.toLowerCase()}`)}
                     className={cn(
-                      'relative flex w-full items-center gap-3 border-l-2 px-4 py-3 text-left transition-colors hover:bg-surface-50 dark:hover:bg-surface-800/50',
+                      'relative flex w-full items-center gap-3 border-r-2 px-4 py-3 transition-colors hover:bg-surface-50 dark:hover:bg-navy-800/50',
                       isSelected
-                        ? 'border-l-primary-500 bg-primary-50/50 dark:border-l-primary-400 dark:bg-primary-950/20'
-                        : 'border-l-transparent',
+                        ? 'border-r-algeria-500 bg-algeria-500/5 dark:bg-algeria-900/10'
+                        : 'border-r-transparent',
                     )}
                   >
-                    {/* Score bar */}
                     <div
                       className={cn(
                         'h-full w-1 shrink-0 rounded-full',
@@ -274,25 +265,24 @@ export default function ProvincesPage() {
                       )}
                     />
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="truncate text-sm font-medium text-surface-900 dark:text-white">
-                          {province.name_fr || code}
-                        </span>
-                        <span className="shrink-0 text-2xs text-surface-400 dark:text-surface-500">
+                    <div className="min-w-0 flex-1 text-right">
+                      <div className="flex items-center gap-2 justify-end">
+                        <span className="shrink-0 text-tiny text-surface-400 dark:text-surface-500">
                           {code}
                         </span>
+                        <span className="truncate text-sm font-semibold text-navy-900 dark:text-white">
+                          {province.name_fr || code}
+                        </span>
                       </div>
-                      <span className="text-xs text-surface-400 dark:text-surface-500" dir="rtl">
+                      <span className="text-xs text-surface-400 dark:text-surface-500 block">
                         {province.name_ar}
                       </span>
                     </div>
 
-                    {/* Score badge */}
-                    <div className="flex shrink-0 flex-col items-end gap-0.5">
+                    <div className="flex shrink-0 flex-col items-start gap-0.5">
                       <span
                         className={cn(
-                          'inline-flex items-center rounded-md px-2 py-0.5 text-xs font-bold tabular-nums',
+                          'inline-flex items-center rounded-btn px-2 py-0.5 text-xs font-bold tabular-nums',
                           val >= 75
                             ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                             : val >= 50
@@ -302,7 +292,7 @@ export default function ProvincesPage() {
                       >
                         {val}
                       </span>
-                      <span className="text-2xs text-surface-400 dark:text-surface-500">
+                      <span className="text-tiny text-surface-400 dark:text-surface-500">
                         {formatNumber(population)}
                       </span>
                     </div>
@@ -310,8 +300,8 @@ export default function ProvincesPage() {
                 )
               })}
               {filtered.length > showCount && (
-                <div className="border-t border-surface-100 px-4 py-3 text-center dark:border-surface-800">
-                  <span className="text-2xs text-surface-400">
+                <div className="border-t border-surface-100 px-4 py-3 text-center dark:border-navy-700">
+                  <span className="text-tiny text-surface-400">
                     {t('provinces.moreProvinces', { count: filtered.length - showCount })}
                   </span>
                 </div>
@@ -319,25 +309,20 @@ export default function ProvincesPage() {
             </>
           )}
         </div>
-      </motion.div>
+      </div>
 
       {/* Right Panel — Map */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
-        className="relative flex-1"
-      >
+      <div className="relative flex-1">
         {/* Legend floating */}
-        <div className="pointer-events-none absolute left-4 top-4 z-[500] rounded-xl border border-surface-200/70 bg-white/80 px-3 py-2.5 shadow-sm backdrop-blur-xl dark:border-surface-700/50 dark:bg-surface-900/80">
-          <p className="mb-2 text-2xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
+        <div className="pointer-events-none absolute right-4 top-4 z-[500] rounded-card border border-surface-200/70 bg-white/90 px-3 py-2.5 shadow-soft backdrop-blur-xl dark:border-navy-700/50 dark:bg-navy-900/90">
+          <p className="mb-2 text-mini font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
             {selectedDimension === 'composite' ? t('map.compositeScore') : getDimensionLabel(selectedDimension)}
           </p>
           <div className="space-y-1">
             {legendItems.map((l) => (
               <div key={l} className="flex items-center gap-2">
                 <span className={`h-2.5 w-2.5 rounded-sm bg-score-${l.toLowerCase()}`} />
-                <span className="text-2xs text-surface-500 dark:text-surface-400">
+                <span className="text-tiny text-surface-500 dark:text-surface-400">
                   {t(`map.${l.toLowerCase()}`)}
                 </span>
               </div>
@@ -350,7 +335,7 @@ export default function ProvincesPage() {
           onProvinceSelect={(code) => navigate(`/provinces/${code.toLowerCase()}`)}
           className="h-full min-h-[400px]"
         />
-      </motion.div>
+      </div>
     </div>
   )
 }

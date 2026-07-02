@@ -43,10 +43,17 @@ export function getScoreLabel(score: number, t?: (key: string) => string): strin
   return t ? t('scores.critical') : 'حرج'
 }
 
-export function getScoreEmoji(score: number): string {
-  if (score >= 90) return '●'
-  if (score >= 75) return '●'
-  if (score >= 60) return '●'
-  if (score >= 40) return '●'
-  return '●'
+export function timeAgo(dateStr: string, t?: (key: string, options?: any) => string): string {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 1) return t ? t('time.justNow') : 'الآن'
+  if (mins < 60) return t ? t('time.minutesAgo', { count: mins }) : `منذ ${mins} دقيقة`
+  const hrs = Math.floor(mins / 60)
+  if (hrs < 24) return t ? t('time.hoursAgo', { count: hrs }) : `منذ ${hrs} ساعة`
+  const days = Math.floor(hrs / 24)
+  if (days < 30) return t ? t('time.daysAgo', { count: days }) : `منذ ${days} يوم`
+  const months = Math.floor(days / 30)
+  if (months < 12) return t ? t('time.monthsAgo', { count: months }) : `منذ ${months} شهر`
+  const years = Math.floor(months / 12)
+  return t ? t('time.yearsAgo', { count: years }) : `منذ ${years} عام`
 }

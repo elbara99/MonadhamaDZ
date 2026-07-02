@@ -4,22 +4,8 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
-  User,
-  Palette,
-  Shield,
-  Globe,
-  Camera,
-  CheckCircle2,
-  Sun,
-  Moon,
-  Monitor,
-  Smartphone,
-  Laptop,
-  MonitorX,
-  Eye,
-  EyeOff,
-  RefreshCw,
-  ChevronRight,
+  User, Palette, Shield, Globe, Camera, CheckCircle2,
+  Sun, Moon, Monitor, Smartphone, Laptop, MonitorX, Eye, EyeOff,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -32,12 +18,8 @@ type FontSize = 'small' | 'medium' | 'large'
 type Density = 'compact' | 'comfortable' | 'spacious'
 
 interface Session {
-  id: string
-  device: string
-  deviceIcon: typeof Smartphone | typeof Laptop | typeof MonitorX
-  ip: string
-  lastActive: string
-  isCurrent: boolean
+  id: string; device: string; deviceIcon: typeof Smartphone | typeof Laptop | typeof MonitorX
+  ip: string; lastActive: string; isCurrent: boolean
 }
 
 const tabs: { id: SettingsTab; labelKey: string; icon: typeof User }[] = [
@@ -65,55 +47,38 @@ const tabVariants = {
 function SectionHeading({ title, description }: { title: string; description?: string }) {
   return (
     <div className="mb-6">
-      <h2 className="text-lg font-semibold text-surface-900 dark:text-white">{title}</h2>
+      <h2 className="text-lg font-bold text-navy-900 dark:text-white">{title}</h2>
       {description && <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">{description}</p>}
     </div>
   )
 }
 
-function Divider() {
-  return <div className="my-6 border-t border-surface-200 dark:border-surface-800" />
-}
+function Divider() { return <div className="my-6 border-t border-surface-200 dark:border-navy-700" /> }
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile')
   const { t } = useTranslation()
 
   return (
-    <div className="mx-auto max-w-[1100px] pb-12">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-      >
-        <h1 className="text-2xl font-semibold tracking-tight text-surface-900 dark:text-white sm:text-3xl">
-          {t('settings.title')}
-        </h1>
-        <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">
-          {t('settings.description')}
-        </p>
+    <div className="p-4 lg:p-6 pb-12 max-w-[1100px] mx-auto">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}>
+        <h1 className="text-2xl font-bold tracking-tight text-navy-900 dark:text-white">{t('settings.title')}</h1>
+        <p className="mt-1 text-sm text-surface-500">{t('settings.description')}</p>
       </motion.div>
 
       <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        {/* Sidebar Navigation */}
         <nav className="lg:w-56 shrink-0">
           <div className="flex flex-row gap-1 overflow-x-auto lg:flex-col">
             {tabs.map((tab) => {
               const Icon = tab.icon
               const isActive = activeTab === tab.id
               return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all whitespace-nowrap',
+                <button key={tab.id} type="button" onClick={() => setActiveTab(tab.id)}
+                  className={cn('flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all whitespace-nowrap',
                     isActive
-                      ? 'bg-primary-50 text-primary-700 shadow-sm dark:bg-primary-950/30 dark:text-primary-300'
-                      : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700 dark:text-surface-400 dark:hover:bg-surface-800 dark:hover:text-surface-200',
-                  )}
-                >
+                      ? 'bg-algeria-50 text-algeria-700 shadow-sm dark:bg-algeria-950/30 dark:text-algeria-300'
+                      : 'text-surface-500 hover:bg-surface-100 hover:text-surface-700 dark:text-surface-400 dark:hover:bg-navy-800 dark:hover:text-surface-200')}>
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="hidden lg:inline">{t(tab.labelKey)}</span>
                 </button>
@@ -122,17 +87,10 @@ export default function SettingsPage() {
           </div>
         </nav>
 
-        {/* Content Area */}
         <div className="flex-1 min-w-0">
-          <div className="rounded-2xl border border-surface-200/70 bg-white p-6 shadow-sm dark:border-surface-800/50 dark:bg-surface-900 sm:p-8">
+          <div className="section-card">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                variants={tabVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
+              <motion.div key={activeTab} variants={tabVariants} initial="hidden" animate="visible" exit="exit">
                 {activeTab === 'profile' && <ProfileTab />}
                 {activeTab === 'appearance' && <AppearanceTab />}
                 {activeTab === 'security' && <SecurityTab />}
@@ -157,35 +115,22 @@ function ProfileTab() {
   return (
     <div>
       <SectionHeading title={t('settings.profile.title')} description={t('settings.profile.description')} />
-
-      {/* Avatar */}
       <div className="mb-6 flex items-center gap-6">
-        <div
-          className="relative"
-          onMouseEnter={() => setAvatarHover(true)}
-          onMouseLeave={() => setAvatarHover(false)}
-        >
+        <div className="relative" onMouseEnter={() => setAvatarHover(true)} onMouseLeave={() => setAvatarHover(false)}>
           <Avatar name="Malik Benmoussa" size="lg" className="h-20 w-20 text-xl" />
           <AnimatePresence>
             {avatarHover && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40"
-              >
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40">
                 <Camera className="h-5 w-5 text-white" />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
         <div>
-          <p className="text-sm font-semibold text-surface-900 dark:text-white">{name}</p>
+          <p className="text-sm font-semibold text-navy-900 dark:text-white">{name}</p>
           <p className="text-xs text-surface-500 dark:text-surface-400">{role}</p>
-          <button
-            type="button"
-            className="mt-1.5 text-xs font-medium text-primary-600 hover:text-primary-500 dark:text-primary-400"
-          >
+          <button type="button" className="mt-1.5 text-xs font-medium text-algeria-600 hover:text-algeria-500 dark:text-algeria-400">
             {t('settings.profile.changePhoto')}
           </button>
         </div>
@@ -193,15 +138,12 @@ function ProfileTab() {
 
       <div className="space-y-5">
         <Input label={t('settings.profile.fullName')} value={name} onChange={(e) => setName(e.target.value)} />
-
         <div>
           <Input label={t('settings.profile.email')} value={email} disabled />
           <div className="mt-1.5 flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            {t('settings.profile.verified')}
+            <CheckCircle2 className="h-3.5 w-3.5" /> {t('settings.profile.verified')}
           </div>
         </div>
-
         <Input label={t('settings.profile.roleTitle')} value={role} onChange={(e) => setRole(e.target.value)} />
         <Input label={t('settings.profile.organization')} value={org} onChange={(e) => setOrg(e.target.value)} />
       </div>
@@ -222,8 +164,8 @@ function AppearanceTab() {
 
   const themeOptions: { id: Theme; labelKey: string; icon: typeof Sun; preview: string }[] = [
     { id: 'light', labelKey: 'settings.appearance.light', icon: Sun, preview: 'bg-white border border-surface-200' },
-    { id: 'dark', labelKey: 'settings.appearance.dark', icon: Moon, preview: 'bg-surface-900 border border-surface-700' },
-    { id: 'system', labelKey: 'settings.appearance.system', icon: Monitor, preview: 'bg-gradient-to-r from-white to-surface-900 border border-surface-300' },
+    { id: 'dark', labelKey: 'settings.appearance.dark', icon: Moon, preview: 'bg-navy-900 border border-navy-700' },
+    { id: 'system', labelKey: 'settings.appearance.system', icon: Monitor, preview: 'bg-gradient-to-r from-white to-navy-900 border border-surface-300' },
   ]
 
   const sizeOptions: { id: FontSize; labelKey: string; preview: string }[] = [
@@ -241,8 +183,6 @@ function AppearanceTab() {
   return (
     <div>
       <SectionHeading title={t('settings.appearance.title')} description={t('settings.appearance.description')} />
-
-      {/* Theme */}
       <div>
         <label className="mb-3 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.appearance.theme')}</label>
         <div className="grid grid-cols-3 gap-3">
@@ -250,31 +190,16 @@ function AppearanceTab() {
             const Icon = opt.icon
             const isSelected = theme === opt.id
             return (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setTheme(opt.id)}
-                className={cn(
-                  'rounded-xl border-2 p-4 text-left transition-all',
-                  isSelected
-                    ? 'border-primary-500 ring-1 ring-primary-500/20'
-                    : 'border-surface-200 hover:border-surface-300 dark:border-surface-700 dark:hover:border-surface-600',
-                )}
-              >
+              <button key={opt.id} type="button" onClick={() => setTheme(opt.id)}
+                className={cn('rounded-xl border-2 p-4 text-left transition-all',
+                  isSelected ? 'border-algeria-500 ring-1 ring-algeria-500/20' : 'border-surface-200 hover:border-surface-300 dark:border-navy-700 dark:hover:border-navy-600')}>
                 <div className={cn('mb-3 h-16 rounded-lg', opt.preview)} />
                 <div className="flex items-center gap-2">
-                  <div className={cn(
-                    'flex h-7 w-7 items-center justify-center rounded-lg',
-                    isSelected
-                      ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/40 dark:text-primary-400'
-                      : 'bg-surface-100 text-surface-500 dark:bg-surface-800 dark:text-surface-400',
-                  )}>
+                  <div className={cn('flex h-7 w-7 items-center justify-center rounded-lg',
+                    isSelected ? 'bg-algeria-100 text-algeria-600 dark:bg-algeria-900/40 dark:text-algeria-400' : 'bg-surface-100 text-surface-500 dark:bg-navy-800 dark:text-surface-400')}>
                     <Icon className="h-4 w-4" />
                   </div>
-                  <span className={cn(
-                    'text-sm font-medium',
-                    isSelected ? 'text-primary-700 dark:text-primary-300' : 'text-surface-700 dark:text-surface-300',
-                  )}>
+                  <span className={cn('text-sm font-medium', isSelected ? 'text-algeria-700 dark:text-algeria-300' : 'text-surface-700 dark:text-surface-300')}>
                     {t(opt.labelKey)}
                   </span>
                 </div>
@@ -286,36 +211,20 @@ function AppearanceTab() {
 
       <Divider />
 
-      {/* Font Size */}
       <div>
         <label className="mb-3 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.appearance.fontSize')}</label>
         <div className="flex gap-2">
           {sizeOptions.map((opt) => {
             const isSelected = fontSize === opt.id
             return (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setFontSize(opt.id)}
-                className={cn(
-                  'flex-1 rounded-xl border-2 px-4 py-3 text-center transition-all',
-                  isSelected
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-950/20'
-                    : 'border-surface-200 hover:border-surface-300 dark:border-surface-700 dark:hover:border-surface-600',
-                )}
-              >
-                <span className={cn(
-                  'font-semibold text-surface-900 dark:text-white',
-                  opt.id === 'small' && 'text-sm',
-                  opt.id === 'medium' && 'text-base',
-                  opt.id === 'large' && 'text-lg',
-                )}>
+              <button key={opt.id} type="button" onClick={() => setFontSize(opt.id)}
+                className={cn('flex-1 rounded-xl border-2 px-4 py-3 text-center transition-all',
+                  isSelected ? 'border-algeria-500 bg-algeria-50 dark:bg-algeria-950/20' : 'border-surface-200 hover:border-surface-300 dark:border-navy-700 dark:hover:border-navy-600')}>
+                <span className={cn('font-semibold text-navy-900 dark:text-white',
+                  opt.id === 'small' && 'text-sm', opt.id === 'medium' && 'text-base', opt.id === 'large' && 'text-lg')}>
                   {opt.preview}
                 </span>
-                <p className={cn(
-                  'mt-1 text-xs font-medium',
-                  isSelected ? 'text-primary-600 dark:text-primary-400' : 'text-surface-500 dark:text-surface-400',
-                )}>
+                <p className={cn('mt-1 text-xs font-medium', isSelected ? 'text-algeria-600 dark:text-algeria-400' : 'text-surface-500 dark:text-surface-400')}>
                   {t(opt.labelKey)}
                 </p>
               </button>
@@ -326,42 +235,26 @@ function AppearanceTab() {
 
       <Divider />
 
-      {/* Density */}
       <div>
         <label className="mb-3 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.appearance.density')}</label>
         <div className="flex gap-2">
           {densityOptions.map((opt) => {
             const isSelected = density === opt.id
             return (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => setDensity(opt.id)}
-                className={cn(
-                  'flex-1 rounded-xl border-2 px-4 py-3 text-left transition-all',
-                  isSelected
-                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-950/20'
-                    : 'border-surface-200 hover:border-surface-300 dark:border-surface-700 dark:hover:border-surface-600',
-                )}
-              >
-                <p className={cn(
-                  'text-sm font-semibold',
-                  isSelected ? 'text-primary-700 dark:text-primary-300' : 'text-surface-900 dark:text-white',
-                )}>
+              <button key={opt.id} type="button" onClick={() => setDensity(opt.id)}
+                className={cn('flex-1 rounded-xl border-2 px-4 py-3 text-left transition-all',
+                  isSelected ? 'border-algeria-500 bg-algeria-50 dark:bg-algeria-950/20' : 'border-surface-200 hover:border-surface-300 dark:border-navy-700 dark:hover:border-navy-600')}>
+                <p className={cn('text-sm font-semibold', isSelected ? 'text-algeria-700 dark:text-algeria-300' : 'text-navy-900 dark:text-white')}>
                   {t(opt.labelKey)}
                 </p>
-                <p className="mt-0.5 text-xs text-surface-500 dark:text-surface-400">
-                  {t(opt.descriptionKey)}
-                </p>
+                <p className="mt-0.5 text-xs text-surface-500 dark:text-surface-400">{t(opt.descriptionKey)}</p>
               </button>
             )
           })}
         </div>
       </div>
 
-      <div className="mt-8">
-        <Button>{t('settings.appearance.apply')}</Button>
-      </div>
+      <div className="mt-8"><Button>{t('settings.appearance.apply')}</Button></div>
     </div>
   )
 }
@@ -384,176 +277,87 @@ function SecurityTab() {
 
   const strengthMet = strengthCriteria.filter((c) => c.met).length
   const strengthPercent = (strengthMet / strengthCriteria.length) * 100
-
-  const strengthColor =
-    strengthPercent <= 25 ? 'bg-danger-500' :
-    strengthPercent <= 50 ? 'bg-warning-500' :
-    strengthPercent <= 75 ? 'bg-warning-400' :
-    'bg-emerald-500'
-
-  const strengthLabel =
-    strengthPercent <= 25 ? t('settings.security.weak') :
-    strengthPercent <= 50 ? t('settings.security.fair') :
-    strengthPercent <= 75 ? t('settings.security.good') :
-    t('settings.security.strong')
+  const strengthColor = strengthPercent <= 25 ? 'bg-danger-500' : strengthPercent <= 50 ? 'bg-warning-500' : strengthPercent <= 75 ? 'bg-warning-400' : 'bg-emerald-500'
+  const strengthLabel = strengthPercent <= 25 ? t('settings.security.weak') : strengthPercent <= 50 ? t('settings.security.fair') : strengthPercent <= 75 ? t('settings.security.good') : t('settings.security.strong')
 
   return (
     <div>
       <SectionHeading title={t('settings.security.title')} description={t('settings.security.description')} />
-
-      {/* Password Change */}
       <div className="space-y-4">
-        <div className="relative">
-          <Input
-            label={t('settings.security.currentPassword')}
-            type={showPw ? 'text' : 'password'}
-            value={currentPw}
-            onChange={(e) => setCurrentPw(e.target.value)}
-          />
-        </div>
-        <div className="relative">
-          <Input
-            label={t('settings.security.newPassword')}
-            type={showPw ? 'text' : 'password'}
-            value={newPw}
-            onChange={(e) => setNewPw(e.target.value)}
-          />
-        </div>
-        <div className="relative">
-          <Input
-            label={t('settings.security.confirmNewPassword')}
-            type={showPw ? 'text' : 'password'}
-            value={confirmPw}
-            onChange={(e) => setConfirmPw(e.target.value)}
-          />
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setShowPw(!showPw)}
-          className="flex items-center gap-1.5 text-xs font-medium text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200"
-        >
+        <Input label={t('settings.security.currentPassword')} type={showPw ? 'text' : 'password'} value={currentPw} onChange={(e) => setCurrentPw(e.target.value)} />
+        <Input label={t('settings.security.newPassword')} type={showPw ? 'text' : 'password'} value={newPw} onChange={(e) => setNewPw(e.target.value)} />
+        <Input label={t('settings.security.confirmNewPassword')} type={showPw ? 'text' : 'password'} value={confirmPw} onChange={(e) => setConfirmPw(e.target.value)} />
+        <button type="button" onClick={() => setShowPw(!showPw)}
+          className="flex items-center gap-1.5 text-xs font-medium text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200">
           {showPw ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
           {showPw ? t('settings.security.hidePasswords') : t('settings.security.showPasswords')}
         </button>
 
-        {/* Strength Indicator */}
         {newPw.length > 0 && (
-          <div className="rounded-xl border border-surface-200 p-4 dark:border-surface-700">
+          <div className="rounded-xl border border-surface-200 p-4 dark:border-navy-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-surface-700 dark:text-surface-300">
-                {t('settings.security.passwordStrength')}
-              </span>
-              <span className={cn(
-                'text-xs font-bold',
-                strengthColor.replace('bg-', 'text-'),
-              )}>
-                {strengthLabel}
-              </span>
+              <span className="text-xs font-medium text-surface-700 dark:text-surface-300">{t('settings.security.passwordStrength')}</span>
+              <span className={cn('text-xs font-bold', strengthColor.replace('bg-', 'text-'))}>{strengthLabel}</span>
             </div>
-            <div className="h-1.5 w-full rounded-full bg-surface-200 dark:bg-surface-700">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${strengthPercent}%` }}
-                transition={{ duration: 0.3 }}
-                className={cn('h-1.5 rounded-full transition-colors', strengthColor)}
-              />
+            <div className="h-1.5 w-full rounded-full bg-surface-200 dark:bg-navy-700">
+              <motion.div initial={{ width: 0 }} animate={{ width: `${strengthPercent}%` }}
+                transition={{ duration: 0.3 }} className={cn('h-1.5 rounded-full transition-colors', strengthColor)} />
             </div>
             <ul className="mt-3 space-y-1">
               {strengthCriteria.map((c) => (
                 <li key={c.label} className="flex items-center gap-2 text-xs">
-                  <span className={cn(
-                    'flex h-3.5 w-3.5 items-center justify-center rounded-full',
-                    c.met ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-surface-100 text-surface-400 dark:bg-surface-800',
-                  )}>
-                    {c.met ? (
-                      <CheckCircle2 className="h-2.5 w-2.5" />
-                    ) : (
-                      <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                    )}
+                  <span className={cn('flex h-3.5 w-3.5 items-center justify-center rounded-full',
+                    c.met ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400' : 'bg-surface-100 text-surface-400 dark:bg-navy-800')}>
+                    {c.met ? <CheckCircle2 className="h-2.5 w-2.5" /> : <span className="h-1.5 w-1.5 rounded-full bg-current" />}
                   </span>
-                  <span className={c.met ? 'text-surface-700 dark:text-surface-300' : 'text-surface-400 dark:text-surface-500'}>
-                    {c.label}
-                  </span>
+                  <span className={c.met ? 'text-surface-700 dark:text-surface-300' : 'text-surface-400 dark:text-surface-500'}>{c.label}</span>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        <Button disabled={!currentPw || !newPw || !confirmPw}>
-          {t('settings.security.updatePassword')}
-        </Button>
+        <Button disabled={!currentPw || !newPw || !confirmPw}>{t('settings.security.updatePassword')}</Button>
       </div>
 
       <Divider />
 
-      {/* Two-Factor Authentication */}
       <div>
-        <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-1">{t('settings.security.twoFactorAuth')}</h3>
-        <p className="text-xs text-surface-500 dark:text-surface-400 mb-4">
-          {t('settings.security.twoFactorDesc')}
-        </p>
-        <div className="flex items-center justify-between rounded-xl border border-surface-200 px-4 py-3 dark:border-surface-700">
+        <h3 className="text-sm font-semibold text-navy-900 dark:text-white mb-1">{t('settings.security.twoFactorAuth')}</h3>
+        <p className="text-xs text-surface-500 dark:text-surface-400 mb-4">{t('settings.security.twoFactorDesc')}</p>
+        <div className="flex items-center justify-between rounded-xl border border-surface-200 px-4 py-3 dark:border-navy-700">
           <div>
-            <p className="text-sm font-medium text-surface-900 dark:text-white">{t('settings.security.authenticatorApp')}</p>
-            <p className="text-xs text-surface-500 dark:text-surface-400">
-              {twoFactor ? t('settings.security.twoFactorEnabled') : t('settings.security.twoFactorDisabled')}
-            </p>
+            <p className="text-sm font-medium text-navy-900 dark:text-white">{t('settings.security.authenticatorApp')}</p>
+            <p className="text-xs text-surface-500 dark:text-surface-400">{twoFactor ? t('settings.security.twoFactorEnabled') : t('settings.security.twoFactorDisabled')}</p>
           </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={twoFactor}
-            onClick={() => setTwoFactor(!twoFactor)}
-            className={cn(
-              'relative h-6 w-11 shrink-0 rounded-full transition-colors',
-              twoFactor ? 'bg-primary-500' : 'bg-surface-300 dark:bg-surface-600',
-            )}
-          >
-            <span className={cn(
-              'block h-5 w-5 rounded-full bg-white shadow-sm transition-transform',
-              twoFactor ? 'translate-x-[22px]' : 'translate-x-0.5',
-            )} />
+          <button type="button" role="switch" aria-checked={twoFactor} onClick={() => setTwoFactor(!twoFactor)}
+            className={cn('relative h-6 w-11 shrink-0 rounded-full transition-colors', twoFactor ? 'bg-algeria-500' : 'bg-surface-300 dark:bg-navy-600')}>
+            <span className={cn('block h-5 w-5 rounded-full bg-white shadow-sm transition-transform', twoFactor ? 'translate-x-[22px]' : 'translate-x-0.5')} />
           </button>
         </div>
         {twoFactor && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-3"
-          >
-            <Button variant="outline" size="sm" className="gap-1.5">
-              {t('settings.security.setupAuthenticator')}
-            </Button>
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} className="mt-3">
+            <Button variant="outline" size="sm" className="gap-1.5">{t('settings.security.setupAuthenticator')}</Button>
           </motion.div>
         )}
       </div>
 
       <Divider />
 
-      {/* Active Sessions */}
       <div>
-        <h3 className="text-sm font-semibold text-surface-900 dark:text-white mb-1">{t('settings.security.activeSessions')}</h3>
-        <p className="text-xs text-surface-500 dark:text-surface-400 mb-4">
-          {t('settings.security.activeSessionsDesc')}
-        </p>
+        <h3 className="text-sm font-semibold text-navy-900 dark:text-white mb-1">{t('settings.security.activeSessions')}</h3>
+        <p className="text-xs text-surface-500 dark:text-surface-400 mb-4">{t('settings.security.activeSessionsDesc')}</p>
         <div className="space-y-2">
           {sessions.map((sess) => {
             const Icon = sess.deviceIcon
             return (
-              <div
-                key={sess.id}
-                className="flex items-center gap-4 rounded-xl border border-surface-200 px-4 py-3 dark:border-surface-700"
-              >
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface-100 text-surface-500 dark:bg-surface-800 dark:text-surface-400">
+              <div key={sess.id} className="flex items-center gap-4 rounded-xl border border-surface-200 px-4 py-3 dark:border-navy-700">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-surface-100 text-surface-500 dark:bg-navy-800 dark:text-surface-400">
                   <Icon className="h-4 w-4" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-surface-900 dark:text-white truncate">
-                      {sess.device}
-                    </p>
+                    <p className="text-sm font-medium text-navy-900 dark:text-white truncate">{sess.device}</p>
                     {sess.isCurrent && (
                       <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-2xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
                         {t('settings.security.current')}
@@ -561,15 +365,11 @@ function SecurityTab() {
                     )}
                   </div>
                   <div className="flex items-center gap-3 text-xs text-surface-500 dark:text-surface-400">
-                    <span>{sess.ip}</span>
-                    <span>&middot;</span>
-                    <span>{sess.lastActive}</span>
+                    <span>{sess.ip}</span><span>&middot;</span><span>{sess.lastActive}</span>
                   </div>
                 </div>
-                  {!sess.isCurrent && (
-                  <Button variant="ghost" size="sm" className="text-surface-400 hover:text-danger-500 text-xs">
-                    {t('settings.security.revoke')}
-                  </Button>
+                {!sess.isCurrent && (
+                  <Button variant="ghost" size="sm" className="text-surface-400 hover:text-danger-500 text-xs">{t('settings.security.revoke')}</Button>
                 )}
               </div>
             )
@@ -597,22 +397,18 @@ function LanguageTab() {
 
   const toggleContentLang = (lang: string) => {
     if (contentLangs.includes(lang)) {
-      if (contentLangs.length > 1) {
-        setContentLangs(contentLangs.filter((l) => l !== lang))
-      }
+      if (contentLangs.length > 1) setContentLangs(contentLangs.filter((l) => l !== lang))
     } else {
       setContentLangs([...contentLangs, lang])
     }
   }
 
-  const selectStyles = 'block w-full rounded-lg border border-surface-300 bg-white px-3 py-2.5 text-sm text-surface-900 outline-none transition-colors focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 dark:border-surface-700 dark:bg-surface-900 dark:text-surface-100'
+  const selectStyles = 'block w-full rounded-xl border border-surface-300 bg-white px-3 py-2.5 text-sm text-navy-900 outline-none transition-colors focus:border-algeria-500 focus:ring-2 focus:ring-algeria-500/30 dark:border-navy-600 dark:bg-navy-900 dark:text-white'
 
   return (
     <div>
       <SectionHeading title={t('settings.language.title')} description={t('settings.language.description')} />
-
       <div className="space-y-6">
-        {/* Interface Language */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.language.interfaceLanguage')}</label>
           <select value={interfaceLang} onChange={(e) => setInterfaceLang(e.target.value)} className={selectStyles}>
@@ -624,44 +420,21 @@ function LanguageTab() {
 
         <Divider />
 
-        {/* Content Language Priority */}
         <div>
-          <label className="mb-3 block text-sm font-medium text-surface-700 dark:text-surface-300">
-            {t('settings.language.contentLanguagePriority')}
-          </label>
+          <label className="mb-3 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.language.contentLanguagePriority')}</label>
           <div className="space-y-2">
             {availableContentLangs.map((lang) => (
-              <button
-                key={lang.id}
-                type="button"
-                disabled={lang.disabled}
-                onClick={() => toggleContentLang(lang.id)}
-                className={cn(
-                  'flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all',
-                  lang.disabled
-                    ? 'border-surface-100 opacity-50 dark:border-surface-800 cursor-not-allowed'
-                    : contentLangs.includes(lang.id)
-                      ? 'border-primary-200 bg-primary-50 dark:border-primary-900/50 dark:bg-primary-950/20'
-                      : 'border-surface-200 hover:border-surface-300 dark:border-surface-700 dark:hover:border-surface-600',
-                )}
-              >
-                <span className={cn(
-                  'flex h-5 w-5 items-center justify-center rounded border transition-colors',
-                  contentLangs.includes(lang.id) && !lang.disabled
-                    ? 'border-primary-500 bg-primary-500 text-white'
-                    : 'border-surface-300 dark:border-surface-600',
-                )}>
+              <button key={lang.id} type="button" disabled={lang.disabled} onClick={() => toggleContentLang(lang.id)}
+                className={cn('flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all',
+                  lang.disabled ? 'border-surface-100 opacity-50 dark:border-navy-800 cursor-not-allowed'
+                    : contentLangs.includes(lang.id) ? 'border-algeria-200 bg-algeria-50 dark:border-algeria-900/50 dark:bg-algeria-950/20'
+                    : 'border-surface-200 hover:border-surface-300 dark:border-navy-700 dark:hover:border-navy-600')}>
+                <span className={cn('flex h-5 w-5 items-center justify-center rounded border transition-colors',
+                  contentLangs.includes(lang.id) && !lang.disabled ? 'border-algeria-500 bg-algeria-500 text-white' : 'border-surface-300 dark:border-navy-600')}>
                   {contentLangs.includes(lang.id) && <CheckCircle2 className="h-3.5 w-3.5" />}
                 </span>
                 <div>
-                  <p className={cn(
-                    'text-sm font-medium',
-                    contentLangs.includes(lang.id)
-                      ? 'text-primary-700 dark:text-primary-300'
-                      : 'text-surface-700 dark:text-surface-300',
-                  )}>
-                    {lang.label}
-                  </p>
+                  <p className={cn('text-sm font-medium', contentLangs.includes(lang.id) ? 'text-algeria-700 dark:text-algeria-300' : 'text-surface-700 dark:text-surface-300')}>{lang.label}</p>
                 </div>
               </button>
             ))}
@@ -670,7 +443,6 @@ function LanguageTab() {
 
         <Divider />
 
-        {/* Number Format */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.language.numberFormat')}</label>
           <select value={numberFormat} onChange={(e) => setNumberFormat(e.target.value)} className={selectStyles}>
@@ -679,17 +451,13 @@ function LanguageTab() {
           </select>
         </div>
 
-        {/* Date Format */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.language.dateFormat')}</label>
           <select value={dateFormat} onChange={(e) => setDateFormat(e.target.value)} className={selectStyles}>
-            {['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD'].map((opt) => (
-              <option key={opt} value={opt}>{opt}</option>
-            ))}
+            {['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY/MM/DD'].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
           </select>
         </div>
 
-        {/* Calendar */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-surface-700 dark:text-surface-300">{t('settings.language.calendar')}</label>
           <select value={calendar} onChange={(e) => setCalendar(e.target.value)} className={selectStyles}>
@@ -699,9 +467,7 @@ function LanguageTab() {
         </div>
       </div>
 
-      <div className="mt-8">
-        <Button>{t('settings.language.apply')}</Button>
-      </div>
+      <div className="mt-8"><Button>{t('settings.language.apply')}</Button></div>
     </div>
   )
 }

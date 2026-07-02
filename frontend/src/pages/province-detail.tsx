@@ -193,7 +193,7 @@ function IndicatorMiniBar({ value, average }: { value: number; average: number }
   const pct = Math.min((value / (average * 2)) * 100, 100)
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-100 dark:bg-surface-800">
+      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-100 dark:bg-navy-700">
         <div
           className={cn(
             'h-full rounded-full transition-all duration-700',
@@ -258,10 +258,10 @@ export default function ProvinceDetailPage() {
   if (isError && !province) {
     return (
       <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-center px-6 py-32 text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-navy-800">
           <AlertCircle className="h-8 w-8 text-danger-500" />
         </div>
-        <h2 className="text-xl font-semibold text-surface-900 dark:text-white">
+        <h2 className="text-xl font-semibold text-navy-900 dark:text-white">
           {t('common.error')}
         </h2>
         <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">
@@ -282,10 +282,10 @@ export default function ProvinceDetailPage() {
   if (!province) {
     return (
       <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-center px-6 py-32 text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-surface-100 dark:bg-navy-800">
           <MapPin className="h-8 w-8 text-surface-400" />
         </div>
-        <h2 className="text-xl font-semibold text-surface-900 dark:text-white">
+        <h2 className="text-xl font-semibold text-navy-900 dark:text-white">
           {t('provinceDetail.notFound')}
         </h2>
         <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">
@@ -329,12 +329,9 @@ export default function ProvinceDetailPage() {
   ]
 
   return (
-    <div className="mx-auto max-w-[1440px] space-y-8 pb-16">
+    <div className="mx-auto max-w-[1440px] space-y-8 pb-16 px-6 pt-8">
       {/* Back nav */}
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
         <button
           type="button"
           onClick={() => navigate('/provinces')}
@@ -347,25 +344,22 @@ export default function ProvinceDetailPage() {
 
       {/* Hero Section */}
       <motion.section
-        custom={0}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
+        custom={0} initial="hidden" animate="visible" variants={sectionVariants}
         className={cn(
-          'relative overflow-hidden rounded-3xl border border-surface-200/70 bg-gradient-to-br p-8 shadow-sm dark:border-surface-800/50',
+          'relative overflow-hidden rounded-3xl border border-surface-200/70 bg-gradient-to-br p-8 shadow-soft dark:border-navy-700/50',
           getScoreGradientBg(province.compositeScore),
         )}
       >
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary-500/5 blur-3xl" />
+        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-algeria-500/5 blur-3xl" />
         <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-accent-500/5 blur-3xl" />
 
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold tracking-tight text-surface-900 dark:text-white">
+              <h1 className="text-3xl font-bold tracking-tight text-navy-900 dark:text-white">
                 {province.name}
               </h1>
-              <Badge variant="primary" size="sm">{province.code}</Badge>
+              <Badge variant="gold" size="sm">{province.code}</Badge>
             </div>
             <div className="mt-1 flex items-center gap-3">
               <span className="text-lg text-surface-500 dark:text-surface-400" dir="rtl">
@@ -400,22 +394,17 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* AI Summary Card */}
-      <motion.section
-        custom={1}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <Card className="relative overflow-hidden border-primary-200/50 bg-gradient-to-br from-primary-50/50 to-white dark:border-primary-900/30 dark:from-primary-950/20 dark:to-surface-900">
-          <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-primary-500/10 blur-3xl" />
+      <motion.section custom={1} initial="hidden" animate="visible" variants={sectionVariants}>
+        <Card className="relative overflow-hidden border-algeria-500/20 bg-gradient-to-br from-algeria-50/50 to-white shadow-soft dark:border-algeria-900/30 dark:from-algeria-950/10 dark:to-navy-900">
+          <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-algeria-500/10 blur-3xl" />
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1">
                 <div className="mb-3 flex items-center gap-2">
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-900/40 dark:text-primary-400">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-algeria-100 text-algeria-600 dark:bg-algeria-900/30 dark:text-algeria-400">
                     <Bot className="h-4 w-4" />
                   </div>
-                  <span className="text-xs font-semibold uppercase tracking-wider text-primary-600 dark:text-primary-400">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-algeria-600 dark:text-algeria-400">
                     {t('provinceDetail.aiGeneratedAnalysis')}
                   </span>
                 </div>
@@ -461,13 +450,8 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* Score Section */}
-      <motion.section
-        custom={2}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <h2 className="mb-5 text-lg font-semibold text-surface-900 dark:text-white">
+      <motion.section custom={2} initial="hidden" animate="visible" variants={sectionVariants}>
+        <h2 className="mb-5 text-lg font-bold tracking-tight text-navy-900 dark:text-white">
           {t('provinceDetail.priorityScoreAndDimensions')}
         </h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
@@ -495,13 +479,8 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* Key Indicators Section */}
-      <motion.section
-        custom={3}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <h2 className="mb-5 text-lg font-semibold text-surface-900 dark:text-white">
+      <motion.section custom={3} initial="hidden" animate="visible" variants={sectionVariants}>
+        <h2 className="mb-5 text-lg font-bold tracking-tight text-navy-900 dark:text-white">
           {t('provinceDetail.keyIndicators')}
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -524,7 +503,7 @@ export default function ProvinceDetailPage() {
                       {value >= avg ? t('common.aboveAvg') : t('common.belowAvg')}
                     </span>
                   </div>
-                  <p className="mt-1.5 text-2xl font-bold text-surface-900 dark:text-white">
+                  <p className="mt-1.5 text-2xl font-bold text-navy-900 dark:text-white">
                     {getIndicatorValue(province, key)}
                   </p>
                   <div className="mt-3">
@@ -542,21 +521,16 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* Charts Section */}
-      <motion.section
-        custom={4}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <h2 className="mb-5 text-lg font-semibold text-surface-900 dark:text-white">
+      <motion.section custom={4} initial="hidden" animate="visible" variants={sectionVariants}>
+        <h2 className="mb-5 text-lg font-bold tracking-tight text-navy-900 dark:text-white">
           {t('provinceDetail.analytics')}
         </h2>
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Card>
             <CardContent className="p-6">
               <div className="mb-4 flex items-center gap-2">
-                <Activity className="h-4 w-4 text-primary-500" />
-                <h3 className="text-sm font-semibold text-surface-900 dark:text-white">
+                <Activity className="h-4 w-4 text-algeria-500" />
+                <h3 className="text-sm font-semibold text-navy-900 dark:text-white">
                   {t('charts.allDimensions')}
                 </h3>
               </div>
@@ -566,8 +540,8 @@ export default function ProvinceDetailPage() {
           <Card>
             <CardContent className="p-6">
               <div className="mb-4 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary-500" />
-                <h3 className="text-sm font-semibold text-surface-900 dark:text-white">
+                <TrendingUp className="h-4 w-4 text-algeria-500" />
+                <h3 className="text-sm font-semibold text-navy-900 dark:text-white">
                   {t('charts.compositeScoreTrend')}
                 </h3>
               </div>
@@ -583,15 +557,10 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* Recent Changes Section */}
-      <motion.section
-        custom={5}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
+      <motion.section custom={5} initial="hidden" animate="visible" variants={sectionVariants}>
         <div className="mb-5 flex items-center gap-2">
-          <Clock className="h-5 w-5 text-primary-500" />
-          <h2 className="text-lg font-semibold text-surface-900 dark:text-white">
+          <Clock className="h-5 w-5 text-algeria-500" />
+          <h2 className="text-lg font-bold tracking-tight text-navy-900 dark:text-white">
             {t('provinceDetail.recentChanges')}
           </h2>
         </div>
@@ -605,11 +574,11 @@ export default function ProvinceDetailPage() {
                       {event.icon}
                     </div>
                     {i < timeline.length - 1 && (
-                      <div className="mt-1 h-full w-px bg-surface-200 dark:bg-surface-700" />
+                      <div className="mt-1 h-full w-px bg-surface-200 dark:bg-navy-700" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1 pb-4">
-                    <p className="text-sm font-medium text-surface-900 dark:text-white">
+                    <p className="text-sm font-medium text-navy-900 dark:text-white">
                       {event.desc}
                     </p>
                     <p className="mt-0.5 text-xs text-surface-400 dark:text-surface-500">
@@ -624,13 +593,8 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* Related Entities */}
-      <motion.section
-        custom={6}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <h2 className="mb-5 text-lg font-semibold text-surface-900 dark:text-white">
+      <motion.section custom={6} initial="hidden" animate="visible" variants={sectionVariants}>
+        <h2 className="mb-5 text-lg font-bold tracking-tight text-navy-900 dark:text-white">
           {t('provinceDetail.relatedEntities')}
         </h2>
         <Card>
@@ -646,12 +610,12 @@ export default function ProvinceDetailPage() {
                   {tabId === 'hospitals' && entities && (
                     <div className="space-y-2">
                       {entities.hospitals.map((h, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-surface-800 dark:bg-surface-800/30">
+                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-navy-700 dark:bg-navy-800/30">
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-surface-900 dark:text-white">{h.name}</p>
+                            <p className="text-sm font-medium text-navy-900 dark:text-white">{h.name}</p>
                             <p className="text-xs text-surface-500 dark:text-surface-400">{t(`provinceDetail.${h.type.toLowerCase()}`, { defaultValue: h.type })} &middot; {h.beds} {t('provinceDetail.beds')} &middot; {h.staff} {t('provinceDetail.staff')}</p>
                           </div>
-                          <Badge variant="primary" size="sm">{h.beds} {t('provinceDetail.beds')}</Badge>
+                          <Badge variant="gold" size="sm">{h.beds} {t('provinceDetail.beds')}</Badge>
                         </div>
                       ))}
                     </div>
@@ -659,9 +623,9 @@ export default function ProvinceDetailPage() {
                   {tabId === 'schools' && entities && (
                     <div className="space-y-2">
                       {entities.schools.map((s, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-surface-800 dark:bg-surface-800/30">
+                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-navy-700 dark:bg-navy-800/30">
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-surface-900 dark:text-white">{s.name}</p>
+                            <p className="text-sm font-medium text-navy-900 dark:text-white">{s.name}</p>
                             <p className="text-xs text-surface-500 dark:text-surface-400">{t(`provinceDetail.schoolLevels.${s.level.toLowerCase()}`, { defaultValue: s.level })} &middot; {s.students} {t('provinceDetail.students')} &middot; {s.teachers} {t('provinceDetail.teachers')}</p>
                           </div>
                           <Badge variant="default" size="sm">{s.students} {t('provinceDetail.students')}</Badge>
@@ -672,9 +636,9 @@ export default function ProvinceDetailPage() {
                   {tabId === 'roads' && entities && (
                     <div className="space-y-2">
                       {entities.roads.map((r, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-surface-800 dark:bg-surface-800/30">
+                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-navy-700 dark:bg-navy-800/30">
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-surface-900 dark:text-white">{r.name}</p>
+                            <p className="text-sm font-medium text-navy-900 dark:text-white">{r.name}</p>
                             <p className="text-xs text-surface-500 dark:text-surface-400">{t(`provinceDetail.${r.type.toLowerCase()}`, { defaultValue: r.type })} &middot; {r.length} {t('provinceDetail.km')} &middot; {t('provinceDetail.condition')}: {t(`provinceDetail.${r.condition === 'Under Construction' ? 'underConstruction' : r.condition.toLowerCase()}`, { defaultValue: r.condition })}</p>
                           </div>
                           <Badge variant={r.condition === 'Good' ? 'success' : r.condition === 'Poor' ? 'danger' : 'warning'} size="sm">{t(`provinceDetail.${r.condition === 'Under Construction' ? 'underConstruction' : r.condition.toLowerCase()}`, { defaultValue: r.condition })}</Badge>
@@ -685,15 +649,15 @@ export default function ProvinceDetailPage() {
                   {tabId === 'projects' && entities && (
                     <div className="space-y-2">
                       {entities.projects.map((p, i) => (
-                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-surface-800 dark:bg-surface-800/30">
+                        <div key={i} className="flex items-center justify-between rounded-xl border border-surface-100 bg-surface-50/50 px-4 py-3 dark:border-navy-700 dark:bg-navy-800/30">
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-medium text-surface-900 dark:text-white">{p.name}</p>
+                            <p className="text-sm font-medium text-navy-900 dark:text-white">{p.name}</p>
                             <p className="text-xs text-surface-500 dark:text-surface-400">{t('provinceDetail.budget')}: ${p.budget}M &middot; {t('provinceDetail.progress')}: {p.progress}%</p>
                           </div>
                           <div className="flex items-center gap-3">
-                            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-200 dark:bg-surface-700">
+                            <div className="h-1.5 w-20 overflow-hidden rounded-full bg-surface-200 dark:bg-navy-700">
                               <div
-                                className="h-full rounded-full bg-primary-500"
+                                className="h-full rounded-full bg-algeria-500"
                                 style={{ width: `${p.progress}%` }}
                               />
                             </div>
@@ -716,19 +680,14 @@ export default function ProvinceDetailPage() {
       </motion.section>
 
       {/* Map Section */}
-      <motion.section
-        custom={7}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
+      <motion.section custom={7} initial="hidden" animate="visible" variants={sectionVariants}>
         <div className="mb-5 flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-primary-500" />
-          <h2 className="text-lg font-semibold text-surface-900 dark:text-white">
+          <MapPin className="h-5 w-5 text-algeria-500" />
+          <h2 className="text-lg font-bold tracking-tight text-navy-900 dark:text-white">
             {t('provinceDetail.location')}
           </h2>
         </div>
-        <div className="h-[320px] overflow-hidden rounded-2xl border border-surface-200/70 shadow-sm dark:border-surface-800/50">
+        <div className="h-[320px] overflow-hidden rounded-2xl border border-surface-200/70 shadow-soft dark:border-navy-700/50">
           <AlgeriaMap
             selectedProvince={province.code}
             onProvinceSelect={() => {}}
@@ -742,11 +701,11 @@ export default function ProvinceDetailPage() {
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-surface-200/50 bg-white/60 px-4 py-3 backdrop-blur-sm dark:border-surface-700/30 dark:bg-surface-900/40">
+    <div className="rounded-xl border border-surface-200/50 bg-white/60 px-4 py-3 backdrop-blur-sm shadow-sm dark:border-navy-700/30 dark:bg-navy-900/40">
       <p className="text-2xs font-medium uppercase tracking-wider text-surface-500 dark:text-surface-400">
         {label}
       </p>
-      <p className="mt-0.5 text-sm font-semibold text-surface-900 dark:text-white">
+      <p className="mt-0.5 text-sm font-semibold text-navy-900 dark:text-white">
         {value}
       </p>
     </div>

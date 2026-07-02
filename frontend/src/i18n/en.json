@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
+    "nationalSituation": "National Situation",
     "provinces": "Provinces",
     "organizations": "Organizations",
     "documents": "Documents",
@@ -43,7 +44,19 @@
     "select": "Select",
     "billion": "B",
     "million": "M",
-    "thousand": "K"
+    "thousand": "K",
+    "overall": "Overall",
+    "filter": "Filter",
+    "health": "Health",
+    "education": "Education",
+    "economy": "Economy",
+    "infrastructure": "Infrastructure",
+    "security": "Security",
+    "employment": "Employment",
+    "population": "Population",
+    "priority": "Priority",
+    "priorityScore": "Priority Score",
+    "confidenceScore": "Confidence"
   },
   "login": {
     "welcomeBack": "Welcome back",
@@ -64,12 +77,22 @@
     "copyright": "© 2026 Monadhama. All rights reserved."
   },
   "dashboard": {
+    "title": "National Situation",
+    "subtitle": "Intelligent wilaya monitoring — real-time tracking across 58 provinces",
     "executiveOverview": "Executive Overview",
     "algeriaMonitored": "Algeria Monitored",
+    "nationalPerformanceMap": "National Performance Map",
+    "nationalScore": "National Score",
+    "safeProvinces": "Safe Provinces",
+    "provincesCount": "provinces",
+    "perCapita": "per capita",
     "population": "Population",
+    "gdp": "GDP",
     "gdpNominal": "GDP (Nominal)",
     "avgCompositeScore": "Avg Composite Score",
     "provincesInAlert": "Provinces in Alert",
+    "provinces": "Provinces",
+    "dataSources": "Data Sources",
     "dataSourcesActive": "Data Sources Active",
     "activeDecisions": "Active Decisions",
     "provinceMap": "Province Map",
@@ -83,12 +106,14 @@
     "keyIssue": "Key Issue",
     "filterBy": "Filter by",
     "showTopBottom": "Show Top / Bottom",
+    "showTopFive": "Show Top 5",
     "showAll": "Show All",
     "recentDecisions": "Recent Decisions",
     "priority": "Priority",
     "confidence": "Confidence",
     "explore": "Explore",
-    "quickSearch": "Quick Search"
+    "quickSearch": "Quick Search",
+    "noAlerts": "No active alerts"
   },
   "provinces": {
     "provinceExplorer": "Province Explorer",
@@ -373,6 +398,11 @@
     "compositeScore": "Composite Score"
   },
   "scores": {
+    "excellent": "Excellent",
+    "good": "Good",
+    "fair": "Fair",
+    "warning": "Warning",
+    "critical": "Critical",
     "priorityScore": "Priority Score",
     "trustScore": "Trust Score"
   },

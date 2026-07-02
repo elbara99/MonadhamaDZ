@@ -3,12 +3,14 @@ import { cn } from '@/lib/utils'
 
 const cardVariants = {
   default:
-    'bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800',
+    'bg-white dark:bg-navy-900 border border-surface-200/70 dark:border-navy-800/70 shadow-soft',
   interactive:
-    'bg-white dark:bg-surface-900 border border-surface-200 dark:border-surface-800 cursor-pointer',
+    'bg-white dark:bg-navy-900 border border-surface-200/70 dark:border-navy-800/70 shadow-soft cursor-pointer',
   highlight:
-    'bg-gradient-to-br from-primary-50 to-surface-50 dark:from-primary-950/30 dark:to-surface-900 border border-primary-200 dark:border-primary-900/50',
-} as const
+    'bg-gradient-to-br from-algeria-50/60 to-surface-50 dark:from-algeria-950/20 dark:to-navy-900 border border-algeria-200/50 dark:border-algeria-900/30',
+  kpi:
+    'bg-gradient-to-br from-gold-50/60 to-white dark:from-gold-950/20 dark:to-navy-900 border border-gold-200/50 dark:border-gold-900/30',
+}
 
 interface CardProps extends HTMLMotionProps<'div'> {
   variant?: keyof typeof cardVariants
@@ -25,7 +27,7 @@ function Card({
   const motionProps =
     variant === 'interactive'
       ? {
-          whileHover: { y: -2 },
+          whileHover: { y: -3 },
           transition: { type: 'spring', stiffness: 300, damping: 20 },
         }
       : {}
@@ -33,7 +35,7 @@ function Card({
   return (
     <MotionDiv
       className={cn(
-        'rounded-xl shadow-card transition-shadow duration-200',
+        'rounded-card transition-all duration-150',
         cardVariants[variant],
         variant === 'interactive' && 'hover:shadow-card-hover',
         className,
@@ -55,7 +57,7 @@ function CardHeader({ className, children }: CardHeaderProps) {
   return (
     <div
       className={cn(
-        'border-b border-surface-200 px-6 py-4 dark:border-surface-800',
+        'border-b border-surface-100 dark:border-navy-800/50 px-5 py-4',
         className,
       )}
     >
@@ -70,7 +72,7 @@ interface CardContentProps {
 }
 
 function CardContent({ className, children }: CardContentProps) {
-  return <div className={cn('px-6 py-4', className)}>{children}</div>
+  return <div className={cn('px-5 py-4', className)}>{children}</div>
 }
 
 interface CardFooterProps {
@@ -82,7 +84,7 @@ function CardFooter({ className, children }: CardFooterProps) {
   return (
     <div
       className={cn(
-        'border-t border-surface-200 px-6 py-4 dark:border-surface-800',
+        'border-t border-surface-100 dark:border-navy-800/50 px-5 py-4',
         className,
       )}
     >
@@ -92,4 +94,3 @@ function CardFooter({ className, children }: CardFooterProps) {
 }
 
 export { Card, CardHeader, CardContent, CardFooter }
-export type { CardProps, CardHeaderProps, CardContentProps, CardFooterProps }

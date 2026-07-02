@@ -79,15 +79,15 @@ const sectorColors: Record<string, string> = {
 function getPriorityColor(score: number): string {
   if (score >= 85) return 'text-danger-500'
   if (score >= 75) return 'text-warning-500'
-  if (score >= 65) return 'text-primary-500'
+  if (score >= 65) return 'text-gold-500'
   return 'text-surface-400'
 }
 
 function getPriorityBg(score: number): string {
   if (score >= 85) return 'bg-danger-50 dark:bg-danger-950/20'
   if (score >= 75) return 'bg-warning-50 dark:bg-warning-950/20'
-  if (score >= 65) return 'bg-primary-50 dark:bg-primary-950/20'
-  return 'bg-surface-50 dark:bg-surface-900/40'
+  if (score >= 65) return 'bg-gold-50 dark:bg-gold-950/20'
+  return 'bg-surface-50 dark:bg-navy-900/40'
 }
 
 function getConfidenceRingColor(confidence: number): string {
@@ -119,24 +119,14 @@ function ConfidenceRing({ value, size = 48 }: { value: number; size?: number }) 
   return (
     <svg width={size} height={size} className="-rotate-90">
       <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        className="text-surface-200 dark:text-surface-700"
+        cx={size / 2} cy={size / 2} r={radius}
+        fill="none" stroke="currentColor" strokeWidth={strokeWidth}
+        className="text-surface-200 dark:text-navy-700"
       />
       <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        stroke={color}
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
+        cx={size / 2} cy={size / 2} r={radius}
+        fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round"
+        strokeDasharray={circumference} strokeDashoffset={offset}
         className="transition-all duration-700"
       />
     </svg>
@@ -144,54 +134,32 @@ function ConfidenceRing({ value, size = 48 }: { value: number; size?: number }) 
 }
 
 function DecisionCard({
-  decision,
-  index,
-  isExpanded,
-  onToggle,
-  onAccept,
-  onReject,
-  onDefer,
-  rejectReason,
-  setRejectReason,
-  showRejectInput,
-  setShowRejectInput,
+  decision, index, isExpanded, onToggle, onAccept, onReject, onDefer,
+  rejectReason, setRejectReason, showRejectInput, setShowRejectInput,
 }: {
-  decision: Decision
-  index: number
-  isExpanded: boolean
-  onToggle: () => void
-  onAccept: () => void
-  onReject: () => void
-  onDefer: () => void
-  rejectReason: string
-  setRejectReason: (val: string) => void
-  showRejectInput: boolean
-  setShowRejectInput: (val: boolean) => void
+  decision: Decision; index: number; isExpanded: boolean; onToggle: () => void
+  onAccept: () => void; onReject: () => void; onDefer: () => void
+  rejectReason: string; setRejectReason: (val: string) => void
+  showRejectInput: boolean; setShowRejectInput: (val: boolean) => void
 }) {
   const { t } = useTranslation()
   const province = getProvinceByCode(decision.targetProvince)
   const config = statusConfig[decision.status]
-  const sectorClass = sectorColors[decision.sector] ?? 'bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-300'
+  const sectorClass = sectorColors[decision.sector] ?? 'bg-surface-100 text-surface-700 dark:bg-navy-800 dark:text-surface-300'
 
   return (
     <motion.div
-      custom={index}
-      initial="hidden"
-      animate="visible"
-      variants={cardVariants}
-      layout
+      custom={index} initial="hidden" animate="visible" variants={cardVariants} layout
       className={cn(
-        'overflow-hidden rounded-2xl border shadow-sm transition-all',
+        'overflow-hidden rounded-2xl border shadow-soft transition-all',
         isExpanded
-          ? 'border-primary-300/50 shadow-card-hover dark:border-primary-700/40'
-          : 'border-surface-200/70 dark:border-surface-800/50',
-        'bg-white/80 backdrop-blur-xl dark:bg-surface-900/60',
+          ? 'border-algeria-500/30 shadow-card-hover dark:border-algeria-700/40'
+          : 'border-surface-200/70 dark:border-navy-700/50',
+        'bg-white/80 backdrop-blur-xl dark:bg-navy-900/60',
       )}
     >
-      {/* Main Card Content */}
       <div className="cursor-pointer px-6 py-5" onClick={onToggle}>
         <div className="flex items-start gap-5">
-          {/* Priority Score Badge */}
           <div className={cn('flex shrink-0 flex-col items-center rounded-xl px-3 py-2.5', getPriorityBg(decision.priorityScore))}>
             <span className={cn('text-2xl font-bold leading-none', getPriorityColor(decision.priorityScore))}>
               {decision.priorityScore}
@@ -201,11 +169,10 @@ function DecisionCard({
             </span>
           </div>
 
-          {/* Main Info */}
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h3 className="text-base font-semibold text-surface-900 dark:text-white">
+                <h3 className="text-base font-semibold text-navy-900 dark:text-white">
                   {decision.title}
                 </h3>
                 <p className="mt-1 text-sm leading-relaxed text-surface-500 dark:text-surface-400 line-clamp-2">
@@ -228,7 +195,6 @@ function DecisionCard({
               </div>
             </div>
 
-            {/* Tags Row */}
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-2xs font-medium', config.color, 'border')}>
                 <span className={cn('h-1.5 w-1.5 rounded-full', config.dot)} />
@@ -248,13 +214,9 @@ function DecisionCard({
               </span>
             </div>
 
-            {/* Evidence Sources */}
             <div className="mt-3 flex flex-wrap gap-1.5">
               {decision.evidence.map((source, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1 rounded-lg bg-surface-50 px-2 py-1 text-2xs text-surface-500 dark:bg-surface-800/40 dark:text-surface-400"
-                >
+                <span key={i} className="inline-flex items-center gap-1 rounded-lg bg-surface-50 px-2 py-1 text-2xs text-surface-500 dark:bg-navy-800/40 dark:text-surface-400">
                   <FileText className="h-2.5 w-2.5" />
                   {source}
                 </span>
@@ -263,67 +225,32 @@ function DecisionCard({
           </div>
         </div>
 
-        {/* Action Buttons (for pending) */}
         {decision.status === 'pending' && !isExpanded && (
-          <div className="mt-4 flex items-center gap-2 border-t border-surface-100 pt-4 dark:border-surface-800">
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation()
-                onAccept()
-              }}
-              className="gap-1.5"
-            >
-              <Check className="h-3.5 w-3.5" />
-              {t('decisions.accept')}
+          <div className="mt-4 flex items-center gap-2 border-t border-surface-100 pt-4 dark:border-navy-700">
+            <Button variant="primary" size="sm" onClick={(e) => { e.stopPropagation(); onAccept() }} className="gap-1.5">
+              <Check className="h-3.5 w-3.5" /> {t('decisions.accept')}
             </Button>
-            <Button
-              variant="danger"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowRejectInput(!showRejectInput)
-              }}
-              className="gap-1.5"
-            >
-              <X className="h-3.5 w-3.5" />
-              {t('decisions.reject')}
+            <Button variant="danger" size="sm" onClick={(e) => { e.stopPropagation(); setShowRejectInput(!showRejectInput) }} className="gap-1.5">
+              <X className="h-3.5 w-3.5" /> {t('decisions.reject')}
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={(e) => {
-                e.stopPropagation()
-                onDefer()
-              }}
-              className="gap-1.5"
-            >
-              <Clock className="h-3.5 w-3.5" />
-              {t('decisions.defer')}
+            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDefer() }} className="gap-1.5">
+              <Clock className="h-3.5 w-3.5" /> {t('decisions.defer')}
             </Button>
           </div>
         )}
 
-        {/* Reject Reason Input */}
         {showRejectInput && (
-          <div className="mt-3 border-t border-surface-100 pt-3 dark:border-surface-800" onClick={(e) => e.stopPropagation()}>
+          <div className="mt-3 border-t border-surface-100 pt-3 dark:border-navy-700" onClick={(e) => e.stopPropagation()}>
             <div className="flex gap-2">
-              <input
-                type="text"
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
+              <input type="text" value={rejectReason} onChange={(e) => setRejectReason(e.target.value)}
                 placeholder={t('decisions.reasonForRejection')}
-                className="flex-1 rounded-lg border border-surface-300 bg-white px-3 py-2 text-xs text-surface-900 placeholder-surface-400 outline-none focus:border-danger-400 focus:ring-2 focus:ring-danger-500/20 dark:border-surface-700 dark:bg-surface-900 dark:text-surface-100 dark:placeholder-surface-500"
+                className="flex-1 rounded-xl border border-surface-300 bg-white px-3 py-2 text-xs text-navy-900 placeholder-surface-400 outline-none focus:border-danger-400 focus:ring-2 focus:ring-danger-500/20 dark:border-navy-600 dark:bg-navy-900 dark:text-white dark:placeholder-surface-500"
               />
-              <Button variant="danger" size="sm" onClick={onReject}>
-                {t('decisions.confirmReject')}
-              </Button>
+              <Button variant="danger" size="sm" onClick={onReject}>{t('decisions.confirmReject')}</Button>
             </div>
           </div>
         )}
 
-        {/* Accepted/Implemented info */}
         {(decision.status === 'accepted' || decision.status === 'implemented') && (
           <div className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 dark:bg-emerald-950/20">
             <CheckCircle2 className="h-4 w-4 text-emerald-500" />
@@ -336,7 +263,6 @@ function DecisionCard({
         )}
       </div>
 
-      {/* Expanded Detail View */}
       <AnimatePresence>
         {isExpanded && (
           <motion.div
@@ -346,40 +272,38 @@ function DecisionCard({
             transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-surface-200/70 px-6 py-5 dark:border-surface-800/50">
+            <div className="border-t border-surface-200/70 px-6 py-5 dark:border-navy-700/50">
               <div className="grid gap-6 lg:grid-cols-2">
-                {/* Full Recommendation */}
                 <div>
                   <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
                     {t('decisions.fullRecommendation')}
                   </h4>
-                  <div className="space-y-3 rounded-xl bg-surface-50/60 p-4 dark:bg-surface-800/30">
+                  <div className="space-y-3 rounded-xl bg-surface-50/60 p-4 dark:bg-navy-800/30">
                     <p className="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
-                      <strong className="text-surface-900 dark:text-white">{t('decisions.context')}</strong> {decision.summary}
+                      <strong className="text-navy-900 dark:text-white">{t('decisions.context')}</strong> {decision.summary}
                     </p>
                     <p className="text-sm leading-relaxed text-surface-700 dark:text-surface-300">
                       {t('decisions.basedOnAnalysis')}{' '}
-                      <strong className="text-surface-900 dark:text-white">{decision.title.toLowerCase()}</strong>.
+                      <strong className="text-navy-900 dark:text-white">{decision.title.toLowerCase()}</strong>.
                       {t('decisions.supportedBySources', { count: decision.evidence.length })} {t('decisions.aiConfidence', { percent: Math.round(decision.confidence * 100) })}
                     </p>
                   </div>
                 </div>
 
-                {/* Expected Impact */}
                 <div>
                   <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
                     {t('decisions.expectedImpact')}
                   </h4>
                   <div className="space-y-3">
-                    <div className="rounded-xl border border-surface-200/60 bg-white/60 p-4 dark:border-surface-700/50 dark:bg-surface-900/40">
+                    <div className="rounded-xl border border-surface-200/60 bg-white/60 p-4 shadow-sm dark:border-navy-700/50 dark:bg-navy-900/40">
                       <div className="grid grid-cols-3 gap-4">
                         <div>
                           <p className="text-2xs text-surface-500 dark:text-surface-400">{t('decisions.metric')}</p>
-                          <p className="mt-0.5 text-xs font-semibold text-surface-900 dark:text-white">{t('decisions.healthcareIndex')}</p>
+                          <p className="mt-0.5 text-xs font-semibold text-navy-900 dark:text-white">{t('decisions.healthcareIndex')}</p>
                         </div>
                         <div>
                           <p className="text-2xs text-surface-500 dark:text-surface-400">{t('decisions.current')}</p>
-                          <p className="mt-0.5 text-xs font-semibold text-surface-900 dark:text-white">27.8</p>
+                          <p className="mt-0.5 text-xs font-semibold text-navy-900 dark:text-white">27.8</p>
                         </div>
                         <div>
                           <p className="text-2xs text-surface-500 dark:text-surface-400">{t('decisions.target')}</p>
@@ -391,18 +315,14 @@ function DecisionCard({
                           <span>{t('decisions.timeline')}: {t('decisions.twelveMonths')}</span>
                           <span>{t('decisions.improvement', { n: '17.2' })}</span>
                         </div>
-                        <div className="mt-1 h-2 rounded-full bg-surface-200 dark:bg-surface-700">
-                          <div
-                            className="h-2 rounded-full bg-emerald-500 transition-all"
-                            style={{ width: '38%' }}
-                          />
+                        <div className="mt-1 h-2 rounded-full bg-surface-200 dark:bg-navy-700">
+                          <div className="h-2 rounded-full bg-emerald-500 transition-all" style={{ width: '38%' }} />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Alternatives */}
                 <div>
                   <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
                     {t('decisions.alternativesConsidered')}
@@ -413,44 +333,34 @@ function DecisionCard({
                       { label: t('decisions.publicPrivatePartnership'), score: '71' },
                       { label: t('decisions.mobileHealthUnit'), score: '55' },
                     ].map((alt, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between rounded-xl border border-surface-200/60 bg-white/60 px-4 py-3 dark:border-surface-700/50 dark:bg-surface-900/40"
-                      >
+                      <div key={i} className="flex items-center justify-between rounded-xl border border-surface-200/60 bg-white/60 px-4 py-3 shadow-sm dark:border-navy-700/50 dark:bg-navy-900/40">
                         <span className="text-xs text-surface-700 dark:text-surface-300">{alt.label}</span>
-                        <span className="text-xs font-medium text-surface-500 dark:text-surface-400">
-                          {t('decisions.score')}: {alt.score}
-                        </span>
+                        <span className="text-xs font-medium text-surface-500 dark:text-surface-400">{t('decisions.score')}: {alt.score}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Decision History */}
                 <div>
                   <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-surface-500 dark:text-surface-400">
                     {t('decisions.decisionHistory')}
                   </h4>
                   <div className="space-y-2">
-                    <div className="flex items-center gap-3 rounded-xl border border-surface-200/60 bg-white/60 px-4 py-3 dark:border-surface-700/50 dark:bg-surface-900/40">
+                    <div className="flex items-center gap-3 rounded-xl border border-surface-200/60 bg-white/60 px-4 py-3 shadow-sm dark:border-navy-700/50 dark:bg-navy-900/40">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
                         <CheckCircle2 className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-surface-900 dark:text-white">
-                          {t('decisions.aiRecommendationGenerated')}
-                        </p>
+                        <p className="text-xs font-medium text-navy-900 dark:text-white">{t('decisions.aiRecommendationGenerated')}</p>
                         <p className="text-2xs text-surface-400">{t('common.source')} — {timeAgo(decision.createdAt)}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 rounded-xl border border-surface-200/60 bg-white/60 px-4 py-3 dark:border-surface-700/50 dark:bg-surface-900/40">
+                    <div className="flex items-center gap-3 rounded-xl border border-surface-200/60 bg-white/60 px-4 py-3 shadow-sm dark:border-navy-700/50 dark:bg-navy-900/40">
                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
                         <Clock className="h-4 w-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-surface-900 dark:text-white">
-                          {t('decisions.pendingReview')}
-                        </p>
+                        <p className="text-xs font-medium text-navy-900 dark:text-white">{t('decisions.pendingReview')}</p>
                         <p className="text-2xs text-surface-400">{t('decisions.awaitingApproval')}</p>
                       </div>
                     </div>
@@ -496,26 +406,20 @@ export default function DecisionsPage() {
 
   function handleAccept(id: string) {
     setLocalDecisions((prev) =>
-      prev.map((d) =>
-        d.id === id ? { ...d, status: 'accepted' as const } : d,
-      ),
+      prev.map((d) => d.id === id ? { ...d, status: 'accepted' as const } : d),
     )
   }
 
   function handleReject(id: string) {
     setLocalDecisions((prev) =>
-      prev.map((d) =>
-        d.id === id ? { ...d, status: 'rejected' as const } : d,
-      ),
+      prev.map((d) => d.id === id ? { ...d, status: 'rejected' as const } : d),
     )
     setShowRejectInputs((prev) => ({ ...prev, [id]: false }))
   }
 
   function handleDefer(id: string) {
     setLocalDecisions((prev) =>
-      prev.map((d) =>
-        d.id === id ? { ...d, status: 'pending' as const } : d,
-      ),
+      prev.map((d) => d.id === id ? { ...d, status: 'pending' as const } : d),
     )
   }
 
@@ -524,59 +428,39 @@ export default function DecisionsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-[1200px] pb-12">
-      {/* Header */}
-      <motion.div
-        custom={0}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="p-4 lg:p-6 pb-12">
+      <motion.div custom={0} initial="hidden" animate="visible" variants={sectionVariants}>
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-surface-900 dark:text-white sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-navy-900 dark:text-white">
               {t('decisions.title')}
             </h1>
-            <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">
+            <p className="text-sm text-surface-500">
               {t('decisions.description')}
             </p>
           </div>
         </div>
       </motion.div>
 
-      {/* Stats Row */}
-      <motion.div
-        custom={1}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="mt-6"
-      >
+      <motion.div custom={1} initial="hidden" animate="visible" variants={sectionVariants} className="mt-6">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
             { label: t('decisions.stats.pending'), value: stats.pending, color: 'text-warning-500', bg: 'bg-warning-50 dark:bg-warning-950/20', icon: Clock },
             { label: t('decisions.stats.accepted'), value: stats.accepted, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-950/20', icon: CheckCircle2 },
             { label: t('decisions.stats.implemented'), value: stats.implemented, color: 'text-sky-500', bg: 'bg-sky-50 dark:bg-sky-950/20', icon: Activity },
-            { label: t('decisions.stats.total'), value: stats.total, color: 'text-primary-500', bg: 'bg-primary-50 dark:bg-primary-950/20', icon: Layers },
+            { label: t('decisions.stats.total'), value: stats.total, color: 'text-gold-500', bg: 'bg-gold-50 dark:bg-gold-950/20', icon: Layers },
           ].map((stat, i) => {
             const Icon = stat.icon
             return (
               <motion.div
-                key={stat.label}
-                custom={i}
-                initial="hidden"
-                animate="visible"
-                variants={cardVariants}
-                className={cn(
-                  'flex items-center gap-4 rounded-2xl border border-surface-200/70 p-5 shadow-sm backdrop-blur-xl dark:border-surface-800/50',
-                  stat.bg,
-                )}
+                key={stat.label} custom={i} initial="hidden" animate="visible" variants={cardVariants}
+                className={cn('flex items-center gap-4 rounded-2xl border border-surface-200/70 p-5 shadow-soft backdrop-blur-xl dark:border-navy-700/50', stat.bg)}
               >
                 <div className={cn('flex h-12 w-12 items-center justify-center rounded-xl', stat.bg)}>
                   <Icon className={cn('h-6 w-6', stat.color)} />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-surface-900 dark:text-white">{stat.value}</p>
+                  <p className="text-2xl font-bold text-navy-900 dark:text-white">{stat.value}</p>
                   <p className={cn('text-xs font-medium', stat.color)}>{stat.label}</p>
                 </div>
               </motion.div>
@@ -585,24 +469,15 @@ export default function DecisionsPage() {
         </div>
       </motion.div>
 
-      {/* Filter Tabs */}
-      <motion.div
-        custom={2}
-        initial="hidden"
-        animate="visible"
-        variants={sectionVariants}
-        className="mt-8"
-      >
-        <div className="flex gap-1 rounded-xl bg-surface-100/80 p-1 dark:bg-surface-800/40">
+      <motion.div custom={2} initial="hidden" animate="visible" variants={sectionVariants} className="mt-8">
+        <div className="flex gap-1 rounded-xl bg-surface-100/80 p-1 dark:bg-navy-800/40">
           {filterTabs.map((tab) => (
             <button
-              key={tab.id}
-              type="button"
-              onClick={() => setFilter(tab.id)}
+              key={tab.id} type="button" onClick={() => setFilter(tab.id)}
               className={cn(
                 'flex-1 rounded-lg px-4 py-2 text-xs font-medium transition-all',
                 filter === tab.id
-                  ? 'bg-white text-surface-900 shadow-sm dark:bg-surface-800 dark:text-white'
+                  ? 'bg-white text-navy-900 shadow-sm dark:bg-navy-800 dark:text-white'
                   : 'text-surface-500 hover:text-surface-700 dark:text-surface-400 dark:hover:text-surface-200',
               )}
             >
@@ -617,31 +492,22 @@ export default function DecisionsPage() {
         </div>
       </motion.div>
 
-      {/* Decision Cards / Empty State */}
       <div className="mt-6 space-y-4">
         {filteredDecisions.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className="flex flex-col items-center justify-center py-20"
           >
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-500 dark:bg-emerald-900/30">
               <CheckCircle2 className="h-8 w-8" />
             </div>
-            <h3 className="text-lg font-semibold text-surface-900 dark:text-white">
-              {t('decisions.noPendingDecisions')}
-            </h3>
-            <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">
-              {t('decisions.allCaughtUp')}
-            </p>
+            <h3 className="text-lg font-semibold text-navy-900 dark:text-white">{t('decisions.noPendingDecisions')}</h3>
+            <p className="mt-1 text-sm text-surface-500 dark:text-surface-400">{t('decisions.allCaughtUp')}</p>
           </motion.div>
         ) : (
           <AnimatePresence mode="popLayout">
             {filteredDecisions.map((decision, index) => (
               <DecisionCard
-                key={decision.id}
-                decision={decision}
-                index={index}
+                key={decision.id} decision={decision} index={index}
                 isExpanded={expandedId === decision.id}
                 onToggle={() => toggleExpand(decision.id)}
                 onAccept={() => handleAccept(decision.id)}
